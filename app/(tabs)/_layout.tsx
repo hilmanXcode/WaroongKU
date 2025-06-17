@@ -9,7 +9,6 @@ const TabIcon = ({focused, icon}: any) => {
 
         <View className=''>
             <Image source={icon} tintColor="#3b82f6" className="size-9"/>
-            {/* <Text className="text-white text-base ml-2">Kasir</Text>     */}
         </View>
         )
     }
@@ -18,7 +17,6 @@ const TabIcon = ({focused, icon}: any) => {
 
         <View className=''>
             <Image source={icon} tintColor="#000" className="size-9"/>
-            {/* <Text className="text-white text-base ml-2">Kasir</Text>     */}
         </View>
     )
 

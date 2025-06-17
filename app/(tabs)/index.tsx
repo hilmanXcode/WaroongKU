@@ -4,11 +4,55 @@ import { images } from "@/constants/images";
 import getDatabase from "@/database/sqlite";
 import { SQLiteDatabase } from "expo-sqlite";
 import { useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, Text, View } from "react-native";
+import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
-  const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
 
+  const fakeData = [
+    {
+      "id": "asdasdasd",
+      "nama": "Indomie Goreng",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    },
+    {
+      "id": "xasx",
+      "nama": "Bakwan Geming",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    },
+    {
+      "id": "pqwoe",
+      "nama": "Cuanki",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    },
+    {
+      "id": "qpaldqw",
+      "nama": "Sepatu Geming",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    },
+    {
+      "id": "mxjasdjq",
+      "nama": "Laptop Bekas",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    }
+  ];
+
+  const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
+  const [totalBelanja, setTotalBelanja] = useState(0);
+  const [keranjang, setKeranjang] = useState<keranjangProps[]>([])
+
+  interface keranjangProps {
+    id: string
+    nama_barang: string
+    harga: number
+    quantity: number
+  }
+
+  
   useEffect(() =>{
     const initDb = async() => {
       try {
@@ -30,43 +74,50 @@ export default function Index() {
       }
 
       initDb();
+
     }
 
   }, []);
 
-  const fakeData = [
-    {
-      "id": "123123",
-      "nama": "Indomie Goreng",
-      "barcode": "123121231233331222",
-      "harga": 3500
-    },
-    {
-      "id": "1234",
-      "nama": "Bakwan Geming",
-      "barcode": "123121231233331222",
-      "harga": 5000
-    },
-    {
-      "id": "0123123",
-      "nama": "Cuanki",
-      "barcode": "123121231233331222",
-      "harga": 10000
-    },
-    {
-      "id": "0123123",
-      "nama": "Sepatu Geming",
-      "barcode": "123121231233331222",
-      "harga": 500000
-    },
-    {
-      "id": "0123123",
-      "nama": "Laptop Bekas",
-      "barcode": "123121231233331222",
-      "harga": 1000
-    }
-  ];
+  
+  // let total = 0;
+  const handleIncrement = (id: string, nama_barang: string, harga: number) => {
 
+    // console.log(`ID barang: ${id}, nama barang: ${nama_barang}, harga barang: ${harga}`);
+    
+    if(keranjang.find((item) => item.id === id)){
+      setKeranjang(prevKeranjang => {
+        const updatedKeranjang = [...prevKeranjang];
+        updatedKeranjang.find((item) => {
+          if(item.id == id){
+            item.quantity += 1;
+          }
+        });
+
+        return updatedKeranjang;
+      });
+    }
+    else {
+      setKeranjang((keranjang) => [
+          ...keranjang,
+          {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+      ])
+    }
+  }
+
+  const handleDecrement = (id: string) => {
+    setKeranjang(prevKeranjang => {
+      const updatedKeranjang = [...prevKeranjang];
+      updatedKeranjang.find((item) => {
+        if(item.id == id && item.quantity != 0){
+          item.quantity -= 1;
+        }
+      });
+
+      return updatedKeranjang;
+    });
+  }
+  // console.l
 
   return (
     <View
@@ -87,7 +138,7 @@ export default function Index() {
         <FlatList
           data={fakeData}
           renderItem={({item}) => (
-            <CardBarang {...item}/> 
+            <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity ?? 0} handleIncrement={() => handleIncrement(item.id, item.nama, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
           )}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
@@ -99,8 +150,17 @@ export default function Index() {
             marginBottom: 10
           }}
           className="mt-5 w-full"
+          ListEmptyComponent={<>
+            <Text className="text-center mt-5">Waduhh.., barang gak ada di database nihhh</Text>
+          </>}
           scrollEnabled={false}
         />
+
+        <TouchableOpacity onPress={() => console.log(keranjang)}>
+          <Text>
+            Click Me Senpai
+          </Text>
+        </TouchableOpacity>
         
       </ScrollView>
     </View>
