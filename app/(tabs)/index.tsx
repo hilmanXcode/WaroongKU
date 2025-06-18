@@ -2,6 +2,7 @@ import CardBarang from "@/components/CardBarang";
 import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
 import getDatabase from "@/database/sqlite";
+import { Link } from "expo-router";
 import { SQLiteDatabase } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -42,8 +43,8 @@ export default function Index() {
   ];
 
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
-  const [totalBelanja, setTotalBelanja] = useState(0);
   const [keranjang, setKeranjang] = useState<keranjangProps[]>([])
+  // const navigation = useNavigation();
 
   interface keranjangProps {
     id: string
@@ -79,11 +80,8 @@ export default function Index() {
 
   }, []);
 
-  
-  // let total = 0;
+  ;
   const handleIncrement = (id: string, nama_barang: string, harga: number) => {
-
-    // console.log(`ID barang: ${id}, nama barang: ${nama_barang}, harga barang: ${harga}`);
     
     if(keranjang.find((item) => item.id === id)){
       setKeranjang(prevKeranjang => {
@@ -103,6 +101,7 @@ export default function Index() {
           {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
       ])
     }
+  
   }
 
   const handleDecrement = (id: string) => {
@@ -117,7 +116,6 @@ export default function Index() {
       return updatedKeranjang;
     });
   }
-  // console.l
 
   return (
     <View
@@ -131,8 +129,8 @@ export default function Index() {
         <SearchBar/>
       </View>
 
-      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
-            minHeight: "100%", paddingBottom: 10
+      <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
+            paddingBottom: 10
         }}>
 
         <FlatList
@@ -156,11 +154,15 @@ export default function Index() {
           scrollEnabled={false}
         />
 
-        <TouchableOpacity onPress={() => console.log(keranjang)}>
-          <Text>
-            Click Me Senpai
-          </Text>
-        </TouchableOpacity>
+        <Link href={{ pathname: "/kasir" }} asChild>
+          <TouchableOpacity activeOpacity={0.7} className="flex-1 bg-blue-500 p-5 rounded-md"
+            
+          >
+            <Text className="font-bold text-white text-center">
+              Checkout
+            </Text>
+          </TouchableOpacity>
+        </Link>
         
       </ScrollView>
     </View>

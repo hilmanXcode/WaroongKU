@@ -12,6 +12,10 @@ export default function RootLayout() {
       <Stack.Screen
         name="barang/[id]"
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="kasir/index"
+        options={{headerShown: false}}
       />    
     </Stack>
   );
