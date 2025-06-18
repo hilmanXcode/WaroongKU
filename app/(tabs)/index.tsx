@@ -2,9 +2,8 @@ import CardBarang from "@/components/CardBarang";
 import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
 import getDatabase from "@/database/sqlite";
-import { Link } from "expo-router";
 import { SQLiteDatabase } from "expo-sqlite";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
@@ -80,7 +79,10 @@ export default function Index() {
 
   }, []);
 
-  ;
+  const totalHarga = useMemo(() => {
+    return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
+  }, [keranjang]);
+
   const handleIncrement = (id: string, nama_barang: string, harga: number) => {
     
     if(keranjang.find((item) => item.id === id)){
@@ -105,17 +107,16 @@ export default function Index() {
   }
 
   const handleDecrement = (id: string) => {
-    setKeranjang(prevKeranjang => {
-      const updatedKeranjang = [...prevKeranjang];
-      updatedKeranjang.find((item) => {
-        if(item.id == id && item.quantity != 0){
-          item.quantity -= 1;
+    setKeranjang(prev =>
+      prev.map(item => {
+        if (item.id === id) {
+          if (item.quantity <= 1) return null;
+          return { ...item, quantity: item.quantity - 1 };
         }
-      });
-
-      return updatedKeranjang;
-    });
-  }
+        return item;
+      }).filter(item => item !== null)
+    );
+  };
 
   return (
     <View
@@ -127,8 +128,14 @@ export default function Index() {
       </View>
       <View className="px-5">
         <SearchBar/>
+        <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
+          <Text className="text-white font-bold">Reset Keranjang</Text>
+          <View>
+            <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
+          </View>
+        </TouchableOpacity>
       </View>
-
+ 
       <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
             paddingBottom: 10
         }}>
@@ -136,6 +143,7 @@ export default function Index() {
         <FlatList
           data={fakeData}
           renderItem={({item}) => (
+            
             <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity ?? 0} handleIncrement={() => handleIncrement(item.id, item.nama, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
           )}
           keyExtractor={(item) => item.id.toString()}
@@ -154,15 +162,14 @@ export default function Index() {
           scrollEnabled={false}
         />
 
-        <Link href={{ pathname: "/kasir" }} asChild>
-          <TouchableOpacity activeOpacity={0.7} className="flex-1 bg-blue-500 p-5 rounded-md"
-            
+        {/* <Link href={{ pathname: "/kasir" }} asChild> */}
+          <View className="flex-1 bg-blue-500 p-5 rounded-md"
           >
             <Text className="font-bold text-white text-center">
-              Checkout
+              Total Harga: Rp. {totalHarga.toLocaleString()}
             </Text>
-          </TouchableOpacity>
-        </Link>
+          </View>
+        {/* </Link> */}
         
       </ScrollView>
     </View>

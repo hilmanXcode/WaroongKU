@@ -17,13 +17,13 @@ const CardBarang = ({ id, nama, barcode, harga, isCashier = false, value = 0, ha
     if(isCashier){
 
         return (
-            <View className='border border-black px-3 py-4 h-[95%] w-[47.9%] rounded-md drop-shadow-xl'>
+            <View className='bg-white px-3 py-4 h-[95%] w-[47.9%] rounded-md drop-shadow-xl'>
                 <Text className='font-semibold'>{nama}</Text>
                 <Text className='mt-2'>Rp. {harga}</Text>
                 <View className='flex-row w-full justify-evenly gap-2 items-center mt-3'>
-                    <TouchableOpacity className='bg-white px-5 h-11 rounded-md -ml-0.5' onPress={handleIncrement}>
+                    <TouchableOpacity className='bg-black/80 px-5 h-11 rounded-md -ml-0.5' onPress={handleIncrement}>
                         <View className='flex-1 items-center justify-center'>
-                            <Text className='font-medium text-xl'>+</Text>
+                            <Text className='font-medium text-xl text-white'>+</Text>
                         </View>
                     </TouchableOpacity>
                     <View className='bg-blue-500 px-4 rounded-md'>
@@ -34,9 +34,9 @@ const CardBarang = ({ id, nama, barcode, harga, isCashier = false, value = 0, ha
                             editable={false}
                         />
                     </View>
-                    <TouchableOpacity className='bg-white px-5 h-11 rounded-md -ml-0.5' onPress={handleDecrement}>
+                    <TouchableOpacity className='bg-black/80 px-5 h-11 rounded-md -ml-0.5' onPress={handleDecrement}>
                         <View className='flex-1 items-center justify-center'>
-                            <Text className='font-medium text-xl'>-</Text>
+                            <Text className='font-medium text-xl text-white'>-</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
