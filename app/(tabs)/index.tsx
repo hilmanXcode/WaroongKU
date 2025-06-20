@@ -43,6 +43,7 @@ export default function Index() {
 
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
   const [keranjang, setKeranjang] = useState<keranjangProps[]>([])
+  const [query, setQuery] = useState('');
   // const navigation = useNavigation();
 
   interface keranjangProps {
@@ -118,6 +119,18 @@ export default function Index() {
     );
   };
 
+  const debugKeranjang = () => {
+    setKeranjang((keranjang) => [
+        ...keranjang,
+        {id: "asdasd", nama_barang: "Bakwan", harga: 1000, quantity: 1}
+    ])
+    setKeranjang((keranjang) => [
+        ...keranjang,
+        {id: "asdasd", nama_barang: "KIMCI", harga: 5000, quantity: 1}
+    ])
+  }
+
+
   return (
     <View
      className="flex-1"
@@ -127,40 +140,63 @@ export default function Index() {
         <Text className="text-xl font-bold text-blue-500 italic -mt-3">WarungKu</Text>
       </View>
       <View className="px-5">
-        <SearchBar/>
-        <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
+        <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} />
+        {keranjang.length ? (
+          <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
           <Text className="text-white font-bold">Reset Keranjang</Text>
+            <View>
+              <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
+            </View>
+          </TouchableOpacity>
+        ): 
+        (
+        <TouchableOpacity onPress={debugKeranjang} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
+          <Text className="text-white font-bold">Debug</Text>
           <View>
             <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
           </View>
         </TouchableOpacity>
+        )
+        }
+        
+        
       </View>
  
       <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
             paddingBottom: 10
         }}>
 
-        <FlatList
-          data={fakeData}
-          renderItem={({item}) => (
-            
-            <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity ?? 0} handleIncrement={() => handleIncrement(item.id, item.nama, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: 'flex-start',
-            gap: 20,
-            // marginHorizontal: "auto",
-            paddingRight: 5,
-            marginBottom: 10
-          }}
-          className="mt-5 w-full"
-          ListEmptyComponent={<>
-            <Text className="text-center mt-5">Waduhh.., barang gak ada di database nihhh</Text>
-          </>}
-          scrollEnabled={false}
-        />
+
+      {query ? (
+        <View><Text>User sedang mencari</Text></View>
+      ) : (
+          <FlatList
+            data={keranjang}
+            renderItem={({item}) => (
+              
+              <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity ?? 0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: 'flex-start',
+              gap: 20,
+              // marginHorizontal: "auto",
+              paddingRight: 5,
+              marginBottom: 10
+            }}
+            className="mt-5 w-full"
+            ListEmptyComponent={(
+              <View>
+                <Text>Oppsie, keranjang kosong, scan/cari barang untuk menambahkan ke keranjang.</Text>
+              </View>
+            )}
+            scrollEnabled={false}
+          />
+        )
+      }
+
+        
 
         {/* <Link href={{ pathname: "/kasir" }} asChild> */}
           <View className="flex-1 bg-blue-500 p-5 rounded-md"

@@ -1,8 +1,13 @@
-import { images } from '@/constants/images'
-import React from 'react'
-import { Image, TextInput, View } from 'react-native'
+import { images } from '@/constants/images';
+import React from 'react';
+import { Image, TextInput, View } from 'react-native';
 
-const SearchBar = () => {
+interface Props {
+  value: string
+  onChangeText?: (text: string) => void;
+}
+
+const SearchBar = ({value, onChangeText}: Props) => {
   return (
     <View className='flex-row items-center border border-[#222831] rounded-md px-5 py-1 mt-5'>
         <Image source={images.search} className='size-5' tintColor="black"/>
@@ -10,6 +15,8 @@ const SearchBar = () => {
             placeholder='Masukkan nama barang'
             className='flex-1 ml-1 text-[#222831]'
             placeholderTextColor="#222831"
+            onChangeText={onChangeText}
+            value={value}
         />
         <Image source={images.barcode} className='size-5' tintColor="#222831"/>
     </View>
