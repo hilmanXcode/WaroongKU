@@ -1,9 +1,11 @@
 import CardBarang from "@/components/CardBarang";
 import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
+import { useKeranjangContext } from "@/context/keranjang-context";
 import getDatabase from "@/database/sqlite";
+import { Link } from "expo-router";
 import { SQLiteDatabase } from "expo-sqlite";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
@@ -11,47 +13,41 @@ export default function Index() {
   const fakeData = [
     {
       "id": "asdasdasd",
-      "nama": "Indomie Goreng",
+      "nama_barang": "Indomie Goreng",
       "barcode": "123121231233331222",
       "harga": 1000
     },
     {
       "id": "xasx",
-      "nama": "Bakwan Geming",
+      "nama_barang": "Bakwan Geming",
       "barcode": "123121231233331222",
       "harga": 1000
     },
     {
       "id": "pqwoe",
-      "nama": "Cuanki",
+      "nama_barang": "Cuanki",
       "barcode": "123121231233331222",
       "harga": 1000
     },
     {
       "id": "qpaldqw",
-      "nama": "Sepatu Geming",
+      "nama_barang": "Sepatu Geming",
       "barcode": "123121231233331222",
       "harga": 1000
     },
     {
       "id": "mxjasdjq",
-      "nama": "Laptop Bekas",
+      "nama_barang": "Laptop Bekas",
       "barcode": "123121231233331222",
       "harga": 1000
     }
   ];
 
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
-  const [keranjang, setKeranjang] = useState<keranjangProps[]>([])
   const [query, setQuery] = useState('');
-  // const navigation = useNavigation();
 
-  interface keranjangProps {
-    id: string
-    nama_barang: string
-    harga: number
-    quantity: number
-  }
+  const { keranjang, setKeranjang } = useKeranjangContext();
+  
 
   
   useEffect(() =>{
@@ -80,55 +76,29 @@ export default function Index() {
 
   }, []);
 
-  const totalHarga = useMemo(() => {
-    return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
-  }, [keranjang]);
-
   const handleIncrement = (id: string, nama_barang: string, harga: number) => {
-    
-    if(keranjang.find((item) => item.id === id)){
-      setKeranjang(prevKeranjang => {
-        const updatedKeranjang = [...prevKeranjang];
-        updatedKeranjang.find((item) => {
-          if(item.id == id){
-            item.quantity += 1;
-          }
-        });
+        
+        if(keranjang.find((item) => item.id === id)){
+        setKeranjang(prevKeranjang => {
+            const updatedKeranjang = [...prevKeranjang];
+            updatedKeranjang.find((item) => {
+            if(item.id == id){
+                item.quantity += 1;
+            }
+            });
 
-        return updatedKeranjang;
-      });
-    }
-    else {
-      setKeranjang((keranjang) => [
-          ...keranjang,
-          {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
-      ])
+            return updatedKeranjang;
+        });
+        }
+        else {
+        setKeranjang((keranjang) => [
+            ...keranjang,
+            {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+        ])
+        }
+
     }
   
-  }
-
-  const handleDecrement = (id: string) => {
-    setKeranjang(prev =>
-      prev.map(item => {
-        if (item.id === id) {
-          if (item.quantity <= 1) return null;
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item;
-      }).filter(item => item !== null)
-    );
-  };
-
-  const debugKeranjang = () => {
-    setKeranjang((keranjang) => [
-        ...keranjang,
-        {id: "asdasd", nama_barang: "Bakwan", harga: 1000, quantity: 1}
-    ])
-    setKeranjang((keranjang) => [
-        ...keranjang,
-        {id: "asdasd", nama_barang: "KIMCI", harga: 5000, quantity: 1}
-    ])
-  }
 
 
   return (
@@ -141,25 +111,12 @@ export default function Index() {
       </View>
       <View className="px-5">
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} />
-        {keranjang.length ? (
-          <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
+        {/* <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
           <Text className="text-white font-bold">Reset Keranjang</Text>
             <View>
               <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
             </View>
-          </TouchableOpacity>
-        ): 
-        (
-        <TouchableOpacity onPress={debugKeranjang} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
-          <Text className="text-white font-bold">Debug</Text>
-          <View>
-            <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
-          </View>
-        </TouchableOpacity>
-        )
-        }
-        
-        
+          </TouchableOpacity> */}
       </View>
  
       <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
@@ -167,45 +124,41 @@ export default function Index() {
         }}>
 
 
-      {query ? (
-        <View><Text>User sedang mencari</Text></View>
-      ) : (
-          <FlatList
-            data={keranjang}
-            renderItem={({item}) => (
-              
-              <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity ?? 0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            columnWrapperStyle={{
-              justifyContent: 'flex-start',
-              gap: 20,
-              // marginHorizontal: "auto",
-              paddingRight: 5,
-              marginBottom: 10
-            }}
-            className="mt-5 w-full"
-            ListEmptyComponent={(
-              <View>
-                <Text>Oppsie, keranjang kosong, scan/cari barang untuk menambahkan ke keranjang.</Text>
-              </View>
-            )}
-            scrollEnabled={false}
-          />
-        )
-      }
-
+      
+      <FlatList
+          data={fakeData}
+          renderItem={({item}) => (
+            
+            <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} />     
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{
+            justifyContent: 'flex-start',
+            gap: 20,
+            // marginHorizontal: "auto",
+            paddingRight: 5,
+            marginBottom: 10
+          }}
+          className="mt-5 w-full"
+          ListEmptyComponent={(
+            <View className="mb-5">
+              <Text>Oppsie, data barang kosong, silahkan tambahkan barang terlebih dahulu.</Text>
+            </View>
+          )}
+          scrollEnabled={false}
+        />
         
-
-        {/* <Link href={{ pathname: "/kasir" }} asChild> */}
-          <View className="flex-1 bg-blue-500 p-5 rounded-md"
-          >
+      {keranjang.length ? (
+        <Link href="/keranjang" asChild>
+          <TouchableOpacity activeOpacity={0.8} className="flex-1 bg-blue-500 p-5 rounded-md">
             <Text className="font-bold text-white text-center">
-              Total Harga: Rp. {totalHarga.toLocaleString()}
+              Cek Keranjang 
             </Text>
-          </View>
-        {/* </Link> */}
+          </TouchableOpacity>
+        </Link>
+      ): null}
+      
         
       </ScrollView>
     </View>
