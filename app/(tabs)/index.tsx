@@ -6,7 +6,8 @@ import getDatabase from "@/database/sqlite";
 import { Link } from "expo-router";
 import { SQLiteDatabase } from "expo-sqlite";
 import { useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import Toast from 'react-native-toast-message';
 
 export default function Index() {
 
@@ -30,6 +31,12 @@ export default function Index() {
       "harga": 1000
     },
     {
+      "id": "slebewgimang",
+      "nama_barang": "Cakwe",
+      "barcode": "123121231233331222",
+      "harga": 1000
+    },
+    {
       "id": "qpaldqw",
       "nama_barang": "Sepatu Geming",
       "barcode": "123121231233331222",
@@ -45,7 +52,9 @@ export default function Index() {
 
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
   const [query, setQuery] = useState('');
-
+  const [searchedBarang, setSearchedBarang] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+  const [found, setFound] = useState(false);
   const { keranjang, setKeranjang } = useKeranjangContext();
   
 
@@ -91,13 +100,41 @@ export default function Index() {
         });
         }
         else {
-        setKeranjang((keranjang) => [
-            ...keranjang,
-            {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
-        ])
+          setKeranjang((keranjang) => [
+              ...keranjang,
+              {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+          ])
+        }
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Berhasil menambahkan ke keranjang',
+          position: 'bottom',
+          swipeable: false,
+          bottomOffset: 80,
+          visibilityTime: 900
+        });
+    }
+
+    useEffect(() => {
+      if(query.trim()){
+        if(fakeData.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())).length === 0){
+          setLoading(false)
+        }
+        else {
+          setSearchedBarang(fakeData.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())))
+          setFound(true);
+          setLoading(false);
         }
 
-    }
+      }
+      else {
+        setFound(false)
+        setSearchedBarang([]);
+
+      }
+        
+    }, [query])
   
 
 
@@ -111,12 +148,7 @@ export default function Index() {
       </View>
       <View className="px-5">
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} />
-        {/* <TouchableOpacity onPress={() => setKeranjang([])} activeOpacity={0.8} className="mt-4 bg-blue-500 w-48 px-5 py-4 rounded-md flex flex-row gap-2 justify-center">
-          <Text className="text-white font-bold">Reset Keranjang</Text>
-            <View>
-              <Image source={images.reset} className="size-5 mt-auto" tintColor="#fff"/>
-            </View>
-          </TouchableOpacity> */}
+        
       </View>
  
       <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
@@ -126,7 +158,7 @@ export default function Index() {
 
       
       <FlatList
-          data={fakeData}
+          data={query.length ? searchedBarang : fakeData}
           renderItem={({item}) => (
             
             <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} />     
@@ -142,8 +174,18 @@ export default function Index() {
           }}
           className="mt-5 w-full"
           ListEmptyComponent={(
+            
             <View className="mb-5">
-              <Text>Oppsie, data barang kosong, silahkan tambahkan barang terlebih dahulu.</Text>
+              {loading ? (
+                <ActivityIndicator 
+                size="large"
+                color="#3b82f6"
+                className="mt-10 self-center"
+              />
+              ) : found ? null : (
+                <Text>Barang tidak ditemukan</Text>
+              ) }
+              
             </View>
           )}
           scrollEnabled={false}
