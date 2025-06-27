@@ -1,16 +1,16 @@
 import { images } from '@/constants/images'
 import { useKeranjangContext } from '@/context/keranjang-context'
-import { router } from 'expo-router'
-import React, { useMemo } from 'react'
+import { Link, router } from 'expo-router'
+import React from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 
 const index = () => {
 
     const { keranjang, setKeranjang } = useKeranjangContext();
 
-    const totalHarga = useMemo(() => {
-        return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
-    }, [keranjang]);
+    // const totalHarga = useMemo(() => {
+    //     return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
+    // }, [keranjang]);
 
     const handleIncrement = (id: string, nama_barang: string, harga: number) => {
         
@@ -27,10 +27,10 @@ const index = () => {
         });
         }
         else {
-        setKeranjang((keranjang) => [
-            ...keranjang,
-            {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
-        ])
+            setKeranjang((keranjang) => [
+                ...keranjang,
+                {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+            ])
         }
 
     }
@@ -47,27 +47,19 @@ const index = () => {
         );
     };
 
-    const debugKeranjang = () => {
-        setKeranjang((keranjang) => [
-            ...keranjang,
-            {id: "xyz", nama_barang: "Bakwan", harga: 1000, quantity: 1}
-        ])
-        setKeranjang((keranjang) => [
-            ...keranjang,
-            {id: "asdasd", nama_barang: "KIMCI", harga: 5000, quantity: 1}
-        ])
-    }
 
 
     return (
         <View className='flex'>
             <View className='flex-row justify-between items-center px-5 mt-14'>
-                <TouchableOpacity onPress={router.back}>
-                    <Image source={images.arrowleft} className='size-5'/>
+                <TouchableOpacity>
+                    <Link href={"/"}>
+                        <Image source={images.arrowleft} className='size-7'/>
+                    </Link>
                 </TouchableOpacity>
                 <Text className='font-bold text-xl mx-auto'>Keranjang</Text>
-                <TouchableOpacity>
-                    <Image source={images.barcode} className='size-5'/>
+                <TouchableOpacity onPress={() => router.push("/scanner")}>
+                    <Image source={images.barcode} className='size-7'/>
                 </TouchableOpacity>
 
             </View>
@@ -103,29 +95,6 @@ const index = () => {
                     </View>
                 ) }
                 
-                {/* End of Card */}
-                {/* <FlatList
-                    data={keranjang}
-                    renderItem={({item}) => (
-                        <CardBarang {...item} isCashier={true} value={keranjang.find((i) => item.id == i.id)?.quantity} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    numColumns={2}
-                    columnWrapperStyle={{
-                        justifyContent: 'flex-start',
-                        gap: 20,
-                        // marginHorizontal: "auto",
-                        paddingRight: 5,
-                        marginBottom: 10
-                    }}
-                    className="mt-5 w-full"
-                    ListEmptyComponent={(
-                        <View className="mb-5">
-                        <Text>Oppsie, data barang kosong, silahkan tambahkan barang terlebih dahulu.</Text>
-                        </View>
-                    )}
-                    scrollEnabled={false}
-                /> */}
             </View>
         </View>
     )

@@ -1,13 +1,16 @@
 import CardBarang from "@/components/CardBarang";
 import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
+import { useBarangContext } from "@/context/barang-context";
 import { useKeranjangContext } from "@/context/keranjang-context";
 import getDatabase from "@/database/sqlite";
-import { Link } from "expo-router";
+import { useCameraPermissions } from "expo-camera";
+import { Link, router } from "expo-router";
 import { SQLiteDatabase } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Toast from 'react-native-toast-message';
+
 
 export default function Index() {
 
@@ -56,34 +59,9 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [found, setFound] = useState(false);
   const { keranjang, setKeranjang } = useKeranjangContext();
-  
-
-  
-  useEffect(() =>{
-    const initDb = async() => {
-      try {
-        const database = await getDatabase();
-        setDatabase(database);
-
-      } catch (error) {
-        console.log(error)
-        throw error;
-      } finally {
-        await database?.execAsync(`
-          CREATE TABLE IF NOT EXISTS barang (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nama_barang varchar(255) NOT NULL,
-            barcode varchar(255) NOT NULL,
-            harga int(11) NOT NULL
-          );
-        `)
-      }
-
-      initDb();
-
-    }
-
-  }, []);
+  const { barang, setBarang } = useBarangContext();
+  const [permission, requestPermission] = useCameraPermissions(); 
+  const isCameraPermissionGranted = Boolean(permission?.granted)
 
   const handleIncrement = (id: string, nama_barang: string, harga: number) => {
         
@@ -118,11 +96,11 @@ export default function Index() {
 
     useEffect(() => {
       if(query.trim()){
-        if(fakeData.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())).length === 0){
+        if(barang.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())).length === 0){
           setLoading(false)
         }
         else {
-          setSearchedBarang(fakeData.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())))
+          setSearchedBarang(barang.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())))
           setFound(true);
           setLoading(false);
         }
@@ -135,8 +113,45 @@ export default function Index() {
       }
         
     }, [query])
-  
 
+    useEffect(() => {
+      const initDb = async() => {
+        try {
+          const database = await getDatabase();
+          setDatabase(database);
+
+        } catch (error) {
+          console.log(error)
+          throw error;
+        } finally {
+          await database?.execAsync(`
+            CREATE TABLE IF NOT EXISTS barang (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              nama_barang varchar(255) NOT NULL,
+              barcode varchar(255) NOT NULL,
+              harga int(11) NOT NULL
+            );
+          `)
+        }
+      }
+
+      setBarang(fakeData);
+
+      initDb();
+    }, [])
+
+
+    const onPressBarcode = async() => {
+      // const response = await requestPermission();
+      // if(isCameraPermissionGranted || response.granted)
+      // {
+      //   router.push("/scanner");
+      // }
+      // else {
+      //   alert("Kamu harus mengizinkan camera untuk menggunakan fitur ini!");
+      // }
+      router.push("/scanner")
+    }
 
   return (
     <View
@@ -147,7 +162,7 @@ export default function Index() {
         <Text className="text-xl font-bold text-blue-500 italic -mt-3">WarungKu</Text>
       </View>
       <View className="px-5">
-        <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} />
+        <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={onPressBarcode} />
         
       </View>
  
@@ -156,9 +171,8 @@ export default function Index() {
         }}>
 
 
-      
       <FlatList
-          data={query.length ? searchedBarang : fakeData}
+          data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
             
             <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} />     
