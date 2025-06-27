@@ -42,14 +42,7 @@ const index = () => {
         
         if(keranjang.find((item) => item.id === data.code)){
           setKeranjang(prevKeranjang => {
-              const updatedKeranjang = [...prevKeranjang];
-              updatedKeranjang.find((item) => {
-              if(item.id == data.code){
-                  item.quantity += 1;
-              }
-              });
-
-              return updatedKeranjang;
+              return prevKeranjang.map(item => item.id === data.code ? {...item, quantity: item.quantity + 1} : item)
           });
         }
         else {
@@ -62,10 +55,10 @@ const index = () => {
         } 
       }
       
-      router.push("/keranjang")
+      router.back()
     }, 500)
     
-  }, [scanned, barang, keranjang])
+  }, [scanned, barang, keranjang, setKeranjang])
 
   const validateQRCode: QRCodeValidator = useCallback((code: string) => {
     if(barang.find((item) => item.id === code))
