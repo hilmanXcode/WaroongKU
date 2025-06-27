@@ -1,8 +1,8 @@
 import CardBarang from "@/components/CardBarang";
 import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
-import { useBarangContext } from "@/context/barang-context";
-import { useKeranjangContext } from "@/context/keranjang-context";
+import { useBarang, useSetBarang } from "@/context/barang-context";
+import { useKeranjang, useSetKeranjang } from "@/context/keranjang-context";
 import getDatabase from "@/database/sqlite";
 import { useCameraPermissions } from "expo-camera";
 import { Link, router } from "expo-router";
@@ -58,8 +58,10 @@ export default function Index() {
   const [searchedBarang, setSearchedBarang] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [found, setFound] = useState(false);
-  const { keranjang, setKeranjang } = useKeranjangContext();
-  const { barang, setBarang } = useBarangContext();
+  const keranjang = useKeranjang();
+  const setKeranjang = useSetKeranjang();
+  const barang = useBarang();
+  const setBarang = useSetBarang();
   const [permission, requestPermission] = useCameraPermissions(); 
   const isCameraPermissionGranted = Boolean(permission?.granted)
 

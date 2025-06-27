@@ -1,12 +1,12 @@
 'use client'
 
 import React, {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState
 } from "react";
 
 
@@ -18,12 +18,8 @@ interface Barang {
 }
 
 
-interface BarangContextType {
-  barang: Barang[];
-  setBarang: Dispatch<SetStateAction<Barang[]>>;
-}
-
-const BarangContext = createContext<BarangContextType | undefined>(undefined);
+const BarangValueContext = createContext<Barang[] | undefined>(undefined);
+const BarangUpdateContext = createContext<Dispatch<SetStateAction<Barang[]>>| undefined>(undefined);
 
 interface BarangProviderProps {
   children: ReactNode;
@@ -33,14 +29,25 @@ export const BarangProvider = ({ children }: BarangProviderProps) => {
   const [barang, setBarang] = useState<Barang[]>([]);
 
   return (
-    <BarangContext.Provider value={{ barang, setBarang }}>
-      {children}
-    </BarangContext.Provider>
+    <BarangValueContext.Provider value={barang}>
+      <BarangUpdateContext.Provider value={setBarang}>
+        {children}
+      </BarangUpdateContext.Provider>
+    </BarangValueContext.Provider>
   );
 };
 
-export const useBarangContext = () => {
-  const context = useContext(BarangContext);
+export const useBarang = () => {
+  const context = useContext(BarangValueContext);
+  if (!context) {
+    throw new Error("BarangContext harus di gunakan di dalam provider!");
+  }
+  return context;
+};
+
+
+export const useSetBarang = () => {
+  const context = useContext(BarangUpdateContext);
   if (!context) {
     throw new Error("BarangContext harus di gunakan di dalam provider!");
   }

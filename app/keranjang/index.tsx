@@ -1,13 +1,13 @@
 import { images } from '@/constants/images'
-import { useKeranjangContext } from '@/context/keranjang-context'
+import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
 import { Link, router } from 'expo-router'
 import React from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 
 const index = () => {
 
-    const { keranjang, setKeranjang } = useKeranjangContext();
-
+    const keranjang = useKeranjang();
+    const setKeranjang = useSetKeranjang();
     // const totalHarga = useMemo(() => {
     //     return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
     // }, [keranjang]);

@@ -18,12 +18,8 @@ interface KeranjangItem {
 }
 
 
-interface KeranjangContextType {
-  keranjang: KeranjangItem[];
-  setKeranjang: Dispatch<SetStateAction<KeranjangItem[]>>;
-}
-
-const KeranjangContext = createContext<KeranjangContextType | undefined>(undefined);
+const KeranjangValueContext = createContext<KeranjangItem[] | undefined>(undefined);
+const KeranjangUpdateContext = createContext<Dispatch<SetStateAction<KeranjangItem[]>>| undefined>(undefined);
 
 interface KeranjangProviderProps {
   children: ReactNode;
@@ -33,16 +29,26 @@ export const KeranjangProvider = ({ children }: KeranjangProviderProps) => {
   const [keranjang, setKeranjang] = useState<KeranjangItem[]>([]);
 
   return (
-    <KeranjangContext.Provider value={{ keranjang, setKeranjang }}>
-      {children}
-    </KeranjangContext.Provider>
+    <KeranjangValueContext.Provider value={keranjang}>
+      <KeranjangUpdateContext.Provider value={setKeranjang}>
+        {children}
+      </KeranjangUpdateContext.Provider>
+    </KeranjangValueContext.Provider>
   );
 };
 
-export const useKeranjangContext = () => {
-  const context = useContext(KeranjangContext);
+export const useKeranjang = () => {
+  const context = useContext(KeranjangValueContext);
   if (!context) {
-    throw new Error("keranjangContext harus di gunakan di dalam provider!");
+    throw new Error("useKeranjang harus di gunakan di dalam provider!");
+  }
+  return context;
+};
+
+export const useSetKeranjang = () => {
+  const context = useContext(KeranjangUpdateContext);
+  if (!context) {
+    throw new Error("setKeranjang harus di gunakan di dalam provider!");
   }
   return context;
 };
