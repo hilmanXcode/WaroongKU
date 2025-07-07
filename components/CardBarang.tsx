@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 
@@ -57,27 +58,19 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, hand
     }
     else {
         return (
-        <View className='bg-blue-500 px-3 py-4 h-[95%] w-[48%] rounded-md'>
-            <Text className='text-white font-semibold'>{nama_barang}</Text>
-            <Text className='text-white mt-2'>Rp. {harga}</Text>
-            {/* <View className='flex-row w-full justify-evenly gap-2 items-center mt-3'>
-                <View className='bg-white px-5 h-11 rounded-md -ml-0.5'>
-                    <View className='flex-1 items-center justify-center'>
-                        <Text className='font-medium text-xl'>+</Text>
-                    </View>
-                </View>
-                <View className='bg-gray-500 px-5 rounded-md'>
-                    <TextInput
-                        value="0"
-                        className='text-white font-bold'
-                    />
-                </View>
-                <View className='bg-white px-5 h-11 rounded-md -ml-0.5'>
-                    <View className='flex-1 items-center justify-center'>
-                        <Text className='font-medium text-xl'>-</Text>
-                    </View>
-                </View>
-            </View> */}
+        <View className='bg-white px-3 py-4 h-[95%] w-[48%] rounded-md'>
+            <Text className='font-semibold'>{nama_barang}</Text>
+            <Text className='mt-2'>Rp. {harga}</Text>
+            <View className='flex-row mt-2 justify-center gap-2'>
+                <TouchableOpacity className='p-2 bg-blue-500 rounded-md flex-row items-center gap-2'>
+                    <Ionicons name='pencil' color="#fff" size={20}></Ionicons>
+                    <Text className='text-white'>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className='p-2 bg-red-500 rounded-md flex-row items-center gap-2'>
+                    <Ionicons name='trash' color="#fff" size={20}></Ionicons>
+                    <Text className='text-white'>Delete</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
     }

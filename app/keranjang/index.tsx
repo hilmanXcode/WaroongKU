@@ -161,6 +161,7 @@ const index = () => {
                                 onPress={() => {
                                     setModalPayment(!modalPayment);
                                     setSuccessModal(true);
+                                    setKeranjang([]);
                                 }}
                                 className="bg-blue-500 py-2 px-4 w-full rounded-md"
                             >
