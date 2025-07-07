@@ -1,8 +1,9 @@
 import { images } from '@/constants/images'
 import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
+import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import React, { useCallback, useMemo } from 'react'
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import { FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 interface Keranjang {
     id: string
@@ -24,7 +25,7 @@ const CardKeranjang = ({id, nama_barang, harga, quantity, handleDecrement, handl
                 <TouchableOpacity onPress={handleDecrement} activeOpacity={0.8} className='px-5 bg-red-500 py-2.5 rounded-md'>
                     <Text className='font-bold text-white'>-</Text>
                 </TouchableOpacity>
-                <View className='px-5 py-2.5 rounded-md'>
+                <View className='px-5 py-2.5 rounded-md border border-gray-500'>
                     <Text className='font-bold'>{quantity}</Text>
                 </View>
                 <TouchableOpacity onPress={handleIncrement} activeOpacity={0.8} className='px-5 bg-green-500 py-2.5 rounded-md'>
@@ -39,6 +40,9 @@ const index = () => {
 
     const keranjang = useKeranjang();
     const setKeranjang = useSetKeranjang();
+    const [modalPayment, setModalPayment] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
+    const [cashPayment, setCashPayment] = useState(0);
 
     const totalHarga = useMemo(() => {
         return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
@@ -105,12 +109,105 @@ const index = () => {
                         )}
                         />
                 </View>
+                {/* Modal Pembayaran */}
+                <Modal
+                    visible={modalPayment}
+                    transparent
+                    animationType="fade"
+                    onRequestClose={() => setModalPayment(!modalPayment)}
+                >
+                    <View className="flex-1 items-center justify-center bg-black/50">
+                    <View className="w-11/12 bg-white rounded-md shadow-md p-6">
+                        <View className="flex-row items-center justify-between pb-4">
+                        <Text className="text-xl font-semibold">Pembayaran</Text>
+                        <Pressable onPress={() => setModalPayment(!modalPayment)}>
+                            <Text className="text-gray-400 text-lg">✖</Text>
+                        </Pressable>
+                        </View>
+
+                        <View className="my-2">
+                            <Text className='font-bold'>Detail Pembelian: </Text>
+                            {keranjang.map((item) => (
+                                <View className='flex-row mt-1' key={item.id}>
+                                    <Text>{item.nama_barang} {item.quantity}x</Text>
+                                    <Text className='ml-auto'>Rp. {(item.harga * item.quantity).toLocaleString()}</Text>
+                                </View>
+                            ))}
+
+                            <View className='flex-row mt-1'>
+                                <Text className='font-bold'>Total Harga: </Text>
+                                <Text className='ml-auto font-bold'>Rp. {totalHarga.toLocaleString()}</Text>
+                            </View>
+                            <View className='flex-row mt-1'>
+                                <Text className='font-bold'>{cashPayment >= totalHarga ? "Kembalian" : "Uang Kurang"}: </Text>
+                                <Text className='ml-auto font-bold'>Rp. {(cashPayment - totalHarga).toLocaleString()}</Text>
+                            </View>
+                            
+                            <View className='mt-2'>
+                                <Text className="text-base font-medium">
+                                    Masukkan uang pembeli <Text className="text-red-600">*</Text>
+                                </Text>
+                                <TextInput
+                                    keyboardType="numeric"
+                                    value={cashPayment.toString()}
+                                    onChangeText={(number: string) => setCashPayment(Number(number))}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded mt-1"
+                                />
+                            </View>
+                        </View>
+
+                        <View className="flex-row w-full pt-2">
+                            <Pressable
+                                onPress={() => {
+                                    setModalPayment(!modalPayment);
+                                    setSuccessModal(true);
+                                }}
+                                className="bg-blue-500 py-2 px-4 w-full rounded-md"
+                            >
+                                <Text className="text-white text-base text-center font-bold">Bayar Sekarang</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    </View>
+                </Modal>
+                {/* End Of Modal Pembayaran */}
+                {/* Modal Success */}
+                <Modal
+                    visible={successModal}
+                    transparent
+                    animationType="fade"
+                    onRequestClose={() => setSuccessModal(!successModal)}
+                >
+                    <View className="flex-1 items-center justify-center bg-black/50">
+                    <View className="w-11/12 bg-white rounded-md shadow-md p-6">
+
+                        <View className="my-2">
+                            <Ionicons className='mx-auto' name='checkmark-circle' color="#3b82f6" size={100} />
+                            <Text className='font-bold text-center text-xl'>Berhasil melakukan pembayaran!</Text>
+                        </View>
+
+                        <View className="flex-row w-full pt-2">
+                            <Pressable
+                                onPress={() => setSuccessModal(!successModal)}
+                                className="bg-blue-500 py-2 px-4 w-full rounded-md"
+                            >
+                                <Text className="text-white text-base text-center font-bold">Tutup</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    </View>
+                </Modal>
+                {/* End Of Modal Success */}
             </View>
             {keranjang.length ? (
                 <View className='w-full absolute bottom-10'>
                     <View className='flex-row items-center bg-white mx-7 p-5 rounded-md shadow-md'>
                         <Text>Total: Rp. {totalHarga.toLocaleString()}</Text>
-                        <TouchableOpacity activeOpacity={0.8} className='ml-auto bg-blue-500 px-5 py-3 rounded-md'>
+                        <TouchableOpacity 
+                            activeOpacity={0.8}
+                            className='ml-auto bg-blue-500 px-5 py-3 rounded-md'
+                            onPress={() => setModalPayment(true)}
+                        >
                             <Text className='text-white font-bold'>Bayar</Text>
                         </TouchableOpacity>
                     </View>
