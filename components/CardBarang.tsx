@@ -20,8 +20,9 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, hand
                 <View className='bg-white px-3 py-4 h-[95%] w-[47.9%] rounded-md drop-shadow-xl'>
                     <Text className='font-semibold'>{nama_barang}</Text>
                     <Text className='mt-2'>Rp. {harga}</Text>
-                    <TouchableOpacity activeOpacity={0.8} onPress={handleIncrement} className='flex-row w-full justify-evenly gap-2 items-center mt-3 bg-blue-500 py-2 rounded-md'>
-                        <Text className='text-white font-medium text-xs'>Tambahkan ke keranjang</Text>
+                    <TouchableOpacity activeOpacity={0.8} onPress={handleIncrement} className='flex-row w-full justify-center gap-2 items-center mt-3 bg-blue-500 py-2 rounded-md'>
+                        <Ionicons name='cart' color="#fff" size={20} />
+                        <Text className='text-white font-medium text-base'>Tambahkan</Text>
                     </TouchableOpacity>
                 </View>
             )

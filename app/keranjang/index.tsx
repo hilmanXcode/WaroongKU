@@ -163,8 +163,9 @@ const index = () => {
                                     setSuccessModal(true);
                                     setKeranjang([]);
                                 }}
-                                className="bg-blue-500 py-2 px-4 w-full rounded-md"
+                                className="bg-blue-500 py-2 px-4 w-full rounded-md flex-row gap-2 items-center justify-center"
                             >
+                                <Ionicons name='cash' color="#fff" size={20} />
                                 <Text className="text-white text-base text-center font-bold">Bayar Sekarang</Text>
                             </Pressable>
                         </View>
@@ -206,9 +207,10 @@ const index = () => {
                         <Text>Total: Rp. {totalHarga.toLocaleString()}</Text>
                         <TouchableOpacity 
                             activeOpacity={0.8}
-                            className='ml-auto bg-blue-500 px-5 py-3 rounded-md'
+                            className='ml-auto bg-blue-500 px-5 py-3 rounded-md flex-row gap-2 items-center'
                             onPress={() => setModalPayment(true)}
                         >
+                            <Ionicons name='cash-outline' color="#fff" size={20} />
                             <Text className='text-white font-bold'>Bayar</Text>
                         </TouchableOpacity>
                     </View>
