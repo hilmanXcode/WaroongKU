@@ -1,26 +1,6 @@
-import { images } from '@/constants/images'
+import { Ionicons } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import React from 'react'
-import { Image, View } from 'react-native'
-
-const TabIcon = ({focused, icon}: any) => {
-    if(focused){
-        return (
-
-        <View className=''>
-            <Image source={icon} tintColor="#3b82f6" className="size-9"/>
-        </View>
-        )
-    }
-    
-    return (
-
-        <View className=''>
-            <Image source={icon} tintColor="#000" className="size-9"/>
-        </View>
-    )
-
-}
 
 const _Layout = () => {
   return (
@@ -30,9 +10,7 @@ const _Layout = () => {
             options={{
                 title: "Kasir",
                 headerShown: false,
-                tabBarIcon: ({focused}) => (
-                    <TabIcon focused={focused} icon={images.cart} />
-                )
+                tabBarIcon: ({color, size}) => <Ionicons name='cart' color={color} size={size} />
             }}
         />
 
@@ -41,9 +19,16 @@ const _Layout = () => {
             options={{
                 title: "Manage Barang",
                 headerShown: false,
-                tabBarIcon: ({focused}) => (
-                    <TabIcon focused={focused} icon={images.kardus}/>
-                )
+                tabBarIcon: ({color, size}) => <Ionicons name='logo-dropbox' color={color} size={size} />
+            }}
+        />
+
+         <Tabs.Screen
+            name="transaksi"
+            options={{
+                title: "Riwayat Transaksi",
+                headerShown: false,
+                tabBarIcon: ({color, size}) => <Ionicons name='time' color={color} size={size} />
             }}
         />
     </Tabs>

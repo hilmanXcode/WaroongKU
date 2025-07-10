@@ -46,7 +46,6 @@ const index = () => {
           });
         }
         else {
-            // console.log("MASUK SINI")
 
             setKeranjang((keranjang) => [
                 ...keranjang,
