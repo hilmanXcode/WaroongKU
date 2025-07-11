@@ -12,7 +12,7 @@ const transaksi = () => {
         <View className='flex-1 px-5'>
             <View className="flex justify-center items-center mt-14">
                 <Image source={images.logo} className="size-12" tintColor="#3b82f6" />
-                <Text className="text-xl font-bold text-blue-500 italic -mt-3">WarungKu</Text>
+                <Text className="text-xl font-bold text-blue-500 italic -mt-3">WaroongKU</Text>
             </View>
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -20,7 +20,7 @@ const transaksi = () => {
                 onPress={() => setOpen(!open)}
             >
                 <Ionicons color="#fff" name='time' size={25} />
-                <Text className='text-white font-bold text-xl'>Pilih Tanggal</Text>
+                <Text className='text-white font-bold text-xl'>{date.toLocaleDateString()}</Text>
             </TouchableOpacity>
             <DatePicker
                 modal

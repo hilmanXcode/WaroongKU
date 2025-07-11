@@ -17,37 +17,37 @@ export default function Index() {
     {
       "id": "asdasdasd",
       "nama_barang": "Indomie Goreng",
-      "barcode": "123121231233331222",
+      "barcode": "y23123jjasdj12323",
       "harga": 1000
     },
     {
       "id": "xasx",
       "nama_barang": "Bakwan Geming",
-      "barcode": "123121231233331222",
+      "barcode": "asdasd123213123",
       "harga": 1000
     },
     {
       "id": "pqwoe",
       "nama_barang": "Cuanki",
-      "barcode": "123121231233331222",
+      "barcode": "asdasdasd1233213",
       "harga": 1000
     },
     {
       "id": "slebewgimang",
       "nama_barang": "Cakwe",
-      "barcode": "123121231233331222",
+      "barcode": "asdasdasd123451122",
       "harga": 1000
     },
     {
       "id": "qpaldqw",
       "nama_barang": "Sepatu Geming",
-      "barcode": "123121231233331222",
+      "barcode": "ashjwrewrwr123551s",
       "harga": 1000
     },
     {
       "id": "mxjasdjq",
       "nama_barang": "Laptop Bekas",
-      "barcode": "123121231233331222",
+      "barcode": "asdasd2132135gggg",
       "harga": 1000
     }
   ];
@@ -63,7 +63,7 @@ export default function Index() {
   const setBarang = useSetBarang();
   
   
-  const handleIncrement = useCallback((id: string, nama_barang: string, harga: number) => {
+  const handleIncrement = useCallback((id: string, nama_barang: string, barcode: string, harga: number) => {
 
       if(keranjang.find((item) => item.id === id)){
         setKeranjang(prevKeranjang => {
@@ -73,7 +73,7 @@ export default function Index() {
       else {
         setKeranjang((keranjang) => [
             ...keranjang,
-            {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+            {id: id, nama_barang: nama_barang, barcode: barcode, harga: harga, quantity: 1}
         ])
       }
       Toast.show({
@@ -145,7 +145,7 @@ export default function Index() {
     >
       <View className="flex justify-center items-center mt-14">
         <Image source={images.logo} className="size-12" tintColor="#3b82f6" />
-        <Text className="text-xl font-bold text-blue-500 italic -mt-3">WarungKu</Text>
+        <Text className="text-xl font-bold text-blue-500 italic -mt-3">WaroongKU</Text>
       </View>
       <View className="px-5">
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={onPressBarcode} />
@@ -161,7 +161,7 @@ export default function Index() {
           data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
             
-            <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} />     
+            <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} />     
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}

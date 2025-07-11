@@ -13,6 +13,7 @@ import React, {
 interface KeranjangItem {
   id: string;
   nama_barang: string;
+  barcode: string;
   harga: number;
   quantity: number;
 }
