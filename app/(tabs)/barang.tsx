@@ -36,6 +36,9 @@ const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProp
       await addNewBarang({database, nama_barang: namaBarang, barcode, harga})
       setSuccess(true);
       setModalValue(false);
+      setBarcode('');
+      setNamaBarang('')
+      setHarga(0);
     } catch(err){
       setSuccess(false);
       console.error(err);
