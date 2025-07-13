@@ -48,7 +48,7 @@ const index = () => {
         return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
     }, [keranjang]);
 
-    const handleIncrement = useCallback((id: string, nama_barang: string, harga: number) => {
+    const handleIncrement = useCallback((id: string, nama_barang: string, barcode: string, harga: number) => {
         if(keranjang.find((item) => item.id === id)){
         setKeranjang(prevKeranjang => {
             return prevKeranjang.map(item => item.id === id ? {...item, quantity: item.quantity + 1} : item)    
@@ -57,7 +57,7 @@ const index = () => {
         else {
         setKeranjang((keranjang) => [
             ...keranjang,
-            {id: id, nama_barang: nama_barang, harga: harga, quantity: 1}
+            {id: id, nama_barang: nama_barang, barcode: barcode, harga: harga, quantity: 1}
         ])
         }
     }, [keranjang, setKeranjang])
@@ -94,7 +94,7 @@ const index = () => {
                     <FlatList
                         data={keranjang}
                         renderItem={({item}) => (
-                            <CardKeranjang {...item} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
+                            <CardKeranjang {...item} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
                         )}
                         keyExtractor={(item) => item.id}
                         

@@ -39,8 +39,6 @@ const index = () => {
 
   const handleScan = useCallback(({type, data}: any) => {
     setTimeout(() => {
-      console.log(data);
-      console.log(type)
       if(tambahBarang && data && !scanned){
         setBarcode(data)
         setScanned(true);

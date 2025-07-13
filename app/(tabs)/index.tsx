@@ -13,46 +13,6 @@ import Toast from 'react-native-toast-message';
 
 
 export default function Index() {
-
-  const fakeData = [
-    {
-      "id": "asdasdasd",
-      "nama_barang": "Indomie Goreng",
-      "barcode": "y23123jjasdj12323",
-      "harga": 1000
-    },
-    {
-      "id": "xasx",
-      "nama_barang": "Bakwan Geming",
-      "barcode": "asdasd123213123",
-      "harga": 1000
-    },
-    {
-      "id": "pqwoe",
-      "nama_barang": "Cuanki",
-      "barcode": "asdasdasd1233213",
-      "harga": 1000
-    },
-    {
-      "id": "slebewgimang",
-      "nama_barang": "Cakwe",
-      "barcode": "asdasdasd123451122",
-      "harga": 1000
-    },
-    {
-      "id": "qpaldqw",
-      "nama_barang": "Sepatu Geming",
-      "barcode": "ashjwrewrwr123551s",
-      "harga": 1000
-    },
-    {
-      "id": "mxjasdjq",
-      "nama_barang": "Laptop Bekas",
-      "barcode": "asdasd2132135gggg",
-      "harga": 1000
-    }
-  ];
-
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
   const [query, setQuery] = useState('');
   const [searchedBarang, setSearchedBarang] = useState<any>([]);
@@ -121,7 +81,7 @@ export default function Index() {
         } finally {
           await database?.execAsync(`
             CREATE TABLE IF NOT EXISTS barang (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              id varchar(255) PRIMARY KEY,
               nama_barang varchar(255) NOT NULL,
               barcode varchar(255) NOT NULL,
               harga int(11) NOT NULL

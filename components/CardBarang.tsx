@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import React from 'react'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 
@@ -10,7 +11,6 @@ interface Props {
     value?: number
     handleIncrement?: () => void
     handleDecrement?: () => void
-    // handleIncrement?: () => void
 }
 
 const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, handleIncrement, handleDecrement }: Props) => {
@@ -63,7 +63,7 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, hand
             <Text className='font-semibold'>{nama_barang}</Text>
             <Text className='mt-2'>Rp. {harga}</Text>
             <View className='flex-row mt-2 justify-center gap-2'>
-                <TouchableOpacity className='p-2 bg-blue-500 rounded-md flex-row items-center gap-2'>
+                <TouchableOpacity onPress={() => router.push(`/barang/${id}`)} className='p-2 bg-blue-500 rounded-md flex-row items-center gap-2'>
                     <Ionicons name='pencil' color="#fff" size={20}></Ionicons>
                     <Text className='text-white'>Edit</Text>
                 </TouchableOpacity>

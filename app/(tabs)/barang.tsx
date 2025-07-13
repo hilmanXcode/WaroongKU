@@ -15,7 +15,7 @@ interface modalProps {
   modalValue: boolean
   setModalValue: (status: boolean) => void;
   database: SQLiteDatabase | null;
-  setSuccess: (status: boolean) => void;
+  setSuccess: (status: boolean) => void
 }
 
 interface barang {
@@ -180,7 +180,7 @@ const Barang = () => {
 
   const resetBarang = async() => {
     try {
-      database?.execAsync("DELETE FROM barang");
+      database?.execAsync('DELETE FROM barang');
       setSuccessAction(true);
     } catch(err){
       setSuccessAction(false);
@@ -218,7 +218,7 @@ const Barang = () => {
           data={barang}
           renderItem={({item}) => (
             
-            <CardBarang {...item} isCashier={false} handleIncrement={() => console.log("HALO GAN")} />     
+            <CardBarang {...item} isCashier={false} />     
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}
