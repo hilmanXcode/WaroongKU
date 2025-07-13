@@ -1,7 +1,7 @@
 import { useBarang } from "@/context/barang-context"
 import { useSetBarcode } from "@/context/barcode-context"
 import { useKeranjang, useSetKeranjang } from "@/context/keranjang-context"
-import { OnSuccessfulScanProps, QRCodeScanner, QRCodeValidator } from "@masumdev/rn-qrcode-scanner"
+import { OnSuccessfulScanProps, QRCodeScanner } from "@masumdev/rn-qrcode-scanner"
 import { router, useLocalSearchParams } from "expo-router"
 import React, { useCallback, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
@@ -26,9 +26,9 @@ const index = () => {
   const handleScan = useCallback((data: OnSuccessfulScanProps) => {
     setTimeout(() => {
       if(tambahBarang && data.code){
-        setBarcode(data.code);
+        setBarcode(data.code)
       }
-      else {
+      else if(!tambahBarang) {
         if(scanned) return;
         setScanned(false);
         const scannedData: dataBarang | undefined = barang.find((item) => item.barcode === data.code);
@@ -68,19 +68,11 @@ const index = () => {
     
   }, [scanned, barang, keranjang, setKeranjang])
 
-  const validateQRCode: QRCodeValidator = useCallback((code: string) => {
-    if(barang.find((item) => item.barcode === code))
-      return {valid: true, code, message: "Barang ditemukan"}
-    else
-      return {valid: false, code}
-  }, [barang])
-
   return (
     <View style={StyleSheet.absoluteFillObject} className="absolute">
       {!scanned && (<QRCodeScanner
         core={{
-          onSuccessfulScan: handleScan,
-          validate: validateQRCode
+          onSuccessfulScan: handleScan
         }}
         permissionScreen={{
           props:{

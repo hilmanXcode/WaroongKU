@@ -3,19 +3,46 @@ import SearchBar from '@/components/SearchBar';
 import { images } from '@/constants/images';
 import { useBarang, useSetBarang } from '@/context/barang-context';
 import { useBarcode, useSetBarcode } from '@/context/barcode-context';
+import { addNewBarang, fetchAllBarang } from '@/database/barang';
+import getDatabase from '@/database/sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SQLiteDatabase } from 'expo-sqlite';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface modalProps {
   modalValue: boolean
   setModalValue: (status: boolean) => void;
+  database: SQLiteDatabase | null;
+  setSuccess: (status: boolean) => void;
 }
 
-const AddModal = ({ modalValue, setModalValue }: modalProps) => {
+interface barang {
+  id: string
+  nama_barang: string
+  barcode: string
+  harga: number
+}
+
+const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProps) => {
   const barcode = useBarcode();
   const setBarcode = useSetBarcode();
+  const [harga, setHarga] = useState(0);
+  const [namaBarang, setNamaBarang] = useState('');
+
+  const handleSubmit = async () => {
+    try {
+      await addNewBarang({database, nama_barang: namaBarang, barcode, harga})
+      setSuccess(true);
+      setModalValue(false);
+    } catch(err){
+      setSuccess(false);
+      console.error(err);
+      throw Error("Gagal menambahkan barang baru");
+    }
+    
+  }
 
 
   return (
@@ -46,9 +73,9 @@ const AddModal = ({ modalValue, setModalValue }: modalProps) => {
                       Nama Barang <Text className="text-red-600">*</Text>
                   </Text>
                   <TextInput
-                      // value={cashPayment.toString()}
-                      // onChangeText={(number: string) => setCashPayment(Number(number))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded mt-1 text-black"
+                      value={namaBarang}
+                      onChangeText={(value: string) => setNamaBarang(value)}
+                      className="w-full px-3 py-2 border border-slate-500 rounded mt-1 text-black"
                   />
               </View>
               <View className='mt-2'>
@@ -57,17 +84,17 @@ const AddModal = ({ modalValue, setModalValue }: modalProps) => {
                   </Text>
                   <View className='flex-row items-center'>
                     <TextInput
-                        // value={barcode.toString()}
-                        // onChangeText={(number: string) => setCashPayment(Number(number))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded mt-1 text-black"
+                        value={barcode}
+                        onChangeText={(value: string) => setBarcode(value)}
+                        className="w-full px-3 py-2 border border-slate-500 rounded mt-1 text-black"
                         />
                       <TouchableOpacity onPress={() => router.push({
                         pathname: "/scanner",
                         params: {
                           tambahBarang: "yes"
                         }
-                      })} activeOpacity={0.8} className='absolute right-3 my-auto'>
-                        <Image source={images.barcode} className='size-7' />
+                      })} activeOpacity={0.8} className='absolute right-2 bottom-1.5'>
+                        <Image source={images.barcode} className='size-7' tintColor="#64748b" />
                       </TouchableOpacity>
                   </View>
               </View>
@@ -77,22 +104,23 @@ const AddModal = ({ modalValue, setModalValue }: modalProps) => {
                   </Text>
                   <TextInput
                       keyboardType='numeric'
-                      // value={cashPayment.toString()}
-                      // onChangeText={(number: string) => setCashPayment(Number(number))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded mt-1 text-black"
+                      value={harga.toString()}
+                      onChangeText={(number: string) => setHarga(Number(number))}
+                      className="w-full px-3 py-2 border border-slate-500 rounded mt-1 text-black"
                       />
                   
               </View>
           </View>
 
           <View className="flex-row w-full pt-2">
-              <Pressable
-                  onPress={() => console.log("HELO DUNIA")}
+              <TouchableOpacity
+                  onPress={handleSubmit}
                   className="bg-blue-500 py-4 w-full rounded-md flex-row gap-2 items-center justify-center"
+                  activeOpacity={0.8}
               >
-                  <Ionicons name='cash' color="#fff" size={20} />
+                  <Ionicons name='logo-dropbox' color="#fff" size={20} />
                   <Text className="text-white text-base text-center font-bold">Tambah Barang</Text>
-              </Pressable>
+              </TouchableOpacity>
           </View>
       </View>
       </View>
@@ -101,11 +129,62 @@ const AddModal = ({ modalValue, setModalValue }: modalProps) => {
 }
 
 const Barang = () => {
+  const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
   const [query, setQuery] = useState("");
   const barang = useBarang();
-
   const [addModal, setAddModal] = useState(false);
   const setBarang = useSetBarang();
+
+  const [successAction, setSuccessAction] = useState(false);
+
+  useEffect(() => {
+      const initDb = async() => {
+        try {
+          const database = await getDatabase();
+          setDatabase(database);
+
+        } catch (error) {
+          console.log(error)
+          throw error;
+        }
+      }
+
+
+      initDb();
+    }, [])
+  
+  useEffect(() => {
+    const fetchBarang = async() => {
+      try {
+        const results = await fetchAllBarang({ database })
+        if(results){
+          setBarang(results)
+          setSuccessAction(false);
+        }
+        else {
+          Alert.alert("Gagal mengambil data barang");
+        }
+      } catch(err){
+        console.error(err);
+      }
+    }
+
+    if(successAction)
+      fetchBarang();
+      
+
+  }, [successAction])
+
+  const resetBarang = async() => {
+    try {
+      database?.execAsync("DELETE FROM barang");
+      setSuccessAction(true);
+    } catch(err){
+      setSuccessAction(false);
+      console.error(err);
+    }
+
+  }
 
   return (
     <View
@@ -122,9 +201,13 @@ const Barang = () => {
           <Ionicons name='add-circle' size={25} color="#fff" />
           <Text className='text-white font-bold text-xl'>Tambah Barang</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={resetBarang} activeOpacity={0.8} className='w-full bg-red-500 rounded-md mt-5 p-4 flex-row items-center justify-center gap-2'>
+          <Ionicons name='add-circle' size={25} color="#fff" />
+          <Text className='text-white font-bold text-xl'>Reset Barang</Text>
+        </TouchableOpacity>
       </View>
 
-      <AddModal modalValue={addModal} setModalValue={setAddModal} />
+      <AddModal modalValue={addModal} setModalValue={setAddModal} database={database} setSuccess={setSuccessAction} />
 
       <View className='px-5'>
 
@@ -150,7 +233,6 @@ const Barang = () => {
               <Text>Barang Kosong Bos</Text>
             </View>
           )}
-          scrollEnabled={false}
           />
       </View>
     </View>
