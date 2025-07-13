@@ -1,11 +1,14 @@
 import { useBarang } from "@/context/barang-context"
 import { useSetBarcode } from "@/context/barcode-context"
 import { useKeranjang, useSetKeranjang } from "@/context/keranjang-context"
-import { OnSuccessfulScanProps, QRCodeScanner } from "@masumdev/rn-qrcode-scanner"
+import { Ionicons } from "@expo/vector-icons"
+import { Camera, CameraView } from "expo-camera"
 import { router, useLocalSearchParams } from "expo-router"
-import React, { useCallback, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Toast from "react-native-toast-message"
+import Overlay from "./overlay"
+
 
 interface dataBarang {
   id: string;
@@ -23,15 +26,28 @@ const index = () => {
   const { tambahBarang } = useLocalSearchParams();
   const setBarcode = useSetBarcode();
 
-  const handleScan = useCallback((data: OnSuccessfulScanProps) => {
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const getCameraPermissions = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    };
+
+    getCameraPermissions();
+  }, []);
+
+  const handleScan = useCallback(({type, data}: any) => {
     setTimeout(() => {
-      if(tambahBarang && data.code){
-        setBarcode(data.code)
+      console.log(data);
+      console.log(type)
+      if(tambahBarang && data && !scanned){
+        setBarcode(data)
+        setScanned(true);
       }
-      else if(!tambahBarang) {
-        if(scanned) return;
-        setScanned(false);
-        const scannedData: dataBarang | undefined = barang.find((item) => item.barcode === data.code);
+      else if(!tambahBarang && !scanned) {
+        setScanned(true);
+        const scannedData: dataBarang | undefined = barang.find((item) => item.barcode === data);
 
         if(!scannedData){
           Toast.show({
@@ -48,9 +64,9 @@ const index = () => {
 
         if(scannedData){
           
-          if(keranjang.find((item) => item.barcode === data.code)){
+          if(keranjang.find((item) => item.barcode === data)){
             setKeranjang(prevKeranjang => {
-                return prevKeranjang.map(item => item.barcode === data.code ? {...item, quantity: item.quantity + 1} : item)
+                return prevKeranjang.map(item => item.barcode === data ? {...item, quantity: item.quantity + 1} : item)
             });
           }
           else {
@@ -61,27 +77,35 @@ const index = () => {
               ])
           } 
         }
-        
+
       }
-      router.back()
     }, 500)
-    
+    router.back()
   }, [scanned, barang, keranjang, setKeranjang])
 
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
-    <View style={StyleSheet.absoluteFillObject} className="absolute">
-      {!scanned && (<QRCodeScanner
-        core={{
-          onSuccessfulScan: handleScan
-        }}
-        permissionScreen={{
-          props:{
-            title: "Izinkan Kamera",
-            subtitle: "Mohon izinkan kamera agar kamu dapat menggunakan fitur ini",
-            buttonBackgroundColor: "#3b82f6",
-          }
-        }}
-      />
+    <View className="flex-1 flex-col justify-center">
+      {!scanned && (
+        <>
+          <CameraView
+            onBarcodeScanned={scanned ? undefined : handleScan}
+            barcodeScannerSettings={{
+              barcodeTypes: ["qr", "ean13"],
+            }}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <TouchableOpacity activeOpacity={0.8} onPress={router.back} className="absolute bg-white z-20 top-16 p-5 rounded-full left-5">
+            <Ionicons name="arrow-back" size={20} color="#000" />
+          </TouchableOpacity>
+          <Overlay/>
+        </>
       )}
     </View>
   )
