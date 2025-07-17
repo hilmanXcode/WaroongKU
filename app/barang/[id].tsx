@@ -47,9 +47,12 @@ const EditBarang = () => {
 
 
   const handleSubmit = async() => {
-    console.log(editBarcode);
     try {
-      editBarang({database, id_barang: id, nama_barang: namaBarang, barcode: editBarcode, harga: harga})
+      const updated = await editBarang({database, id_barang: id, nama_barang: namaBarang, barcode: editBarcode, harga: harga})
+      
+      if(!updated)
+        return Alert.alert("Gagal mengupdate data barang");
+
       const results = await fetchAllBarang({database});
       if(results){
         setBarang(results)
@@ -76,7 +79,7 @@ const EditBarang = () => {
 
         <View className='flex flex-row items-center px-10 h-screen -mt-16'>
           <View>
-            <Text className='text-2xl font-bold mb-2'>Edit Barang {namaBarang}</Text>
+            <Text className='text-2xl font-bold mb-2'>Edit Data Barang {data.nama_barang}</Text>
             <View>
                 <Text className="text-base font-medium">
                     Nama Barang <Text className="text-red-600">*</Text>

@@ -3,7 +3,7 @@ import SearchBar from '@/components/SearchBar';
 import { images } from '@/constants/images';
 import { useBarang, useSetBarang } from '@/context/barang-context';
 import { useBarcode, useSetBarcode } from '@/context/barcode-context';
-import { addNewBarang, fetchAllBarang } from '@/database/barang';
+import { addNewBarang, fetchAllBarang, hapusBarang } from '@/database/barang';
 import getDatabase from '@/database/sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -16,13 +16,8 @@ interface modalProps {
   setModalValue: (status: boolean) => void;
   database: SQLiteDatabase | null;
   setSuccess: (status: boolean) => void
-}
-
-interface barang {
-  id: string
-  nama_barang: string
-  barcode: string
-  harga: number
+  targetId?: string
+  setDeleteId?: (text: string) => void;
 }
 
 const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProps) => {
@@ -131,13 +126,100 @@ const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProp
   )
 }
 
+const DeleteModal = ({ modalValue, setModalValue, database, setSuccess, targetId, setDeleteId }: modalProps) => {
+  if(!setDeleteId){
+    Alert.alert("Fungsi deleteId tidak ditemukan");
+    return;
+  }
+  const barang = useBarang();
+
+  useEffect(() => {
+    if (modalValue && !barang.find((item) => item.id === targetId)) {
+      Alert.alert("Barang tidak ditemukan di database");
+      setModalValue(false);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (modalValue && !targetId) {
+      Alert.alert("Something went wrong, contact developers!");
+      setModalValue(false);
+    } 
+  }, [targetId]);
+  
+
+  const namaBarang = barang.find((item) => item.id === targetId)?.nama_barang;
+
+  const handleSubmit = async() => {
+    try {
+      const deleted = await hapusBarang({ database, id_barang: targetId });
+      
+      if(!deleted)
+        return Alert.alert("Gagal menghapus barang");
+      
+      setSuccess(true);
+      setModalValue(false);
+      setDeleteId('')
+    } catch(err){
+      setSuccess(false);
+      console.error(err);
+      throw Error("Gagal menambahkan barang baru");
+    }
+
+
+    
+  }
+
+
+  return (
+    <Modal
+      visible={modalValue}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setModalValue(!modalValue)}
+  >
+      <View className="flex-1 items-center justify-center bg-black/50">
+      <View className="w-11/12 bg-white rounded-md shadow-md p-6">
+          <View className="flex-row items-center justify-between pb-4">
+            <View className='flex-row items-center gap-2'>
+              <Ionicons name='trash' size={25} color="#000" className='font-bold' />
+              <Text className="text-xl font-bold">
+                Hapus Barang
+              </Text>
+            </View>
+            
+          <Pressable onPress={() => setModalValue(!modalValue)}>
+              <Text className="text-gray-400 text-lg">✖</Text>
+          </Pressable>
+          </View>
+
+          <View className="my-2">
+              <Text className='font-bold text-2xl text-center'>Apakah kamu yakin ingin menghapus barang {namaBarang}?</Text>
+          </View>
+
+          <View className="flex-row w-full pt-2">
+              <TouchableOpacity
+                  onPress={handleSubmit}
+                  className="bg-red-500 py-4 w-full rounded-md flex-row gap-2 items-center justify-center"
+                  activeOpacity={0.8}
+              >
+                  <Text className="text-white text-base text-center font-bold">Yakin</Text>
+              </TouchableOpacity>
+          </View>
+      </View>
+      </View>
+  </Modal>
+  )
+}
+
 const Barang = () => {
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
   const [query, setQuery] = useState("");
   const barang = useBarang();
   const [addModal, setAddModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const setBarang = useSetBarang();
-
+  const [deleteId, setDeleteId] = useState("");
   const [successAction, setSuccessAction] = useState(false);
 
   useEffect(() => {
@@ -189,6 +271,11 @@ const Barang = () => {
 
   }
 
+  const handleDelete = (id: string) => {
+    setDeleteId(id);
+    setDeleteModal(true);
+  }
+
   return (
     <View
       className="flex-1"
@@ -211,6 +298,7 @@ const Barang = () => {
       </View>
 
       <AddModal modalValue={addModal} setModalValue={setAddModal} database={database} setSuccess={setSuccessAction} />
+      <DeleteModal modalValue={deleteModal} setDeleteId={setDeleteId} setModalValue={setDeleteModal} database={database} targetId={deleteId} setSuccess={setSuccessAction} />
 
       <View className='px-5'>
 
@@ -218,7 +306,7 @@ const Barang = () => {
           data={barang}
           renderItem={({item}) => (
             
-            <CardBarang {...item} isCashier={false} />     
+            <CardBarang {...item} isCashier={false} handleDelete={() => handleDelete(item.id)} />     
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}

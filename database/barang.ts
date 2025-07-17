@@ -53,17 +53,37 @@ export const fetchAllBarang = async ({database}: barangDb) => {
     return result;
 }
 
-export const editBarang = ({ database, id_barang, nama_barang, barcode, harga }: barangDb) => {
+export const editBarang = async({ database, id_barang, nama_barang, barcode, harga }: barangDb) => {
+    let result: boolean = true;
     if(!database)
         return Alert.alert("Gagal mendapatkan koneksi ke database");
 
     try {
-        database.execAsync(`
+        await database.execAsync(`
             UPDATE barang SET nama_barang='${nama_barang}', barcode='${barcode}', harga='${harga}'
             WHERE id='${id_barang}'
-        `);    
+        `);
     } catch(err){
         console.error(err);
+        result = false;
     }
-    
+
+    return result;
+}
+
+export const hapusBarang = async({database, id_barang}: barangDb) => {
+    let result: boolean = true
+    if(!database)
+        return Alert.alert("Gagal mendapatkan koneksi ke database");
+
+    try {
+        await database.execAsync(`
+            DELETE FROM barang WHERE id='${id_barang}'
+        `);
+    } catch(err){
+        console.error(err);
+        result = false;
+    }
+
+    return result;
 }

@@ -11,9 +11,10 @@ interface Props {
     value?: number
     handleIncrement?: () => void
     handleDecrement?: () => void
+    handleDelete?: () => void
 }
 
-const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, handleIncrement, handleDecrement }: Props) => {
+const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, handleIncrement, handleDecrement, handleDelete }: Props) => {
     if(isCashier){
         if(value === 0){
             return (
@@ -67,7 +68,7 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, hand
                     <Ionicons name='pencil' color="#fff" size={20}></Ionicons>
                     <Text className='text-white'>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className='p-2 bg-red-500 rounded-md flex-row items-center gap-2'>
+                <TouchableOpacity onPress={handleDelete} className='p-2 bg-red-500 rounded-md flex-row items-center gap-2'>
                     <Ionicons name='trash' color="#fff" size={20}></Ionicons>
                     <Text className='text-white'>Delete</Text>
                 </TouchableOpacity>
