@@ -23,9 +23,10 @@ Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang 
 
 ## 🛠️ Teknologi yang Digunakan
 
-- **React Native** – Buat tampilan aplikasi mobile
-- **AsyncStorage** – Nyimpen data lokal di device
-- **Expo** – Biar development lebih lancar
+- **React Native**
+- **Expo**
+- **Nativewind**
+- **SQLite**
 
 ---
 
