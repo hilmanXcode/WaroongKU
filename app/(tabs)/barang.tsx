@@ -260,17 +260,6 @@ const Barang = () => {
 
   }, [successAction])
 
-  const resetBarang = async() => {
-    try {
-      database?.execAsync('DELETE FROM barang');
-      setSuccessAction(true);
-    } catch(err){
-      setSuccessAction(false);
-      console.error(err);
-    }
-
-  }
-
   const handleDelete = (id: string) => {
     setDeleteId(id);
     setDeleteModal(true);
@@ -290,10 +279,6 @@ const Barang = () => {
         <TouchableOpacity onPress={() => setAddModal(!addModal)} activeOpacity={0.8} className='w-full bg-blue-500 rounded-md mt-5 p-4 flex-row items-center justify-center gap-2'>
           <Ionicons name='add-circle' size={25} color="#fff" />
           <Text className='text-white font-bold text-xl'>Tambah Barang</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={resetBarang} activeOpacity={0.8} className='w-full bg-red-500 rounded-md mt-5 p-4 flex-row items-center justify-center gap-2'>
-          <Ionicons name='add-circle' size={25} color="#fff" />
-          <Text className='text-white font-bold text-xl'>Reset Barang</Text>
         </TouchableOpacity>
       </View>
 
