@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+# 🍜 WaroongKU
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Halo! 👋  
+Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang lagi dikembangin, cocok buat bantu UMKM atau warung kecil jualan dengan cara yang lebih modern.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Apa itu WaroongKU?
+
+**WaroongKU** adalah aplikasi mobile yang dibuat buat bantu warung kecil nyatet barang dagangan dan transaksi dengan cara digital. Cocok buat kamu yang pengen usaha warung tapi nggak mau ribet pake buku catatan lagi 😄
+
+---
+
+## 📱 Fitur-Fitur (sementara)
+
+- 🛒 Tambah & hapus barang dagangan
+- 📝 Edit nama, harga, dan jumlah barang
+- 💵 Lihat total belanja
+
+> Catatan: Fitur seperti **cek stok** atau **reset semua data** belum tersedia yaa — masih dalam proses pengembangan 🛠️
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+- **React Native** – Buat tampilan aplikasi mobile
+- **AsyncStorage** – Nyimpen data lokal di device
+- **Expo** – Biar development lebih lancar
+
+---
+
+## 💻 Cara Jalankan Project Ini
+
+1. Clone dulu repo-nya:
+
+   ```bash
+   git clone https://github.com/hilmanXcode/WaroongKU.git
+   cd WaroongKU
+   ```
+
+2. Install dependency:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Jalankan aplikasi:
 
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+4. Scan QR code-nya pakai **Expo Go** di HP kamu 📱
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🧪 Status Proyek
 
-## Get a fresh project
+Project ini **masih dalam tahap pengembangan**, jadi fitur-fitur akan terus ditambah dan disempurnakan.  
+Kalau kamu punya ide, kritik, atau pengen bantu kontribusi — **sangat terbantu banget!** 🙌
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## 👤 Author
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Made with ❤️ by [@hilmanXcode](https://github.com/hilmanXcode)
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## ☕ Mau Ngobrol?
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Buka tab [Issues](https://github.com/hilmanXcode/WaroongKU/issues) ya kalau ada ide, pertanyaan, atau bug yang mau dilaporin.
