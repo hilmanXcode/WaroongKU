@@ -47,6 +47,9 @@ const EditBarang = () => {
 
 
   const handleSubmit = async() => {
+    if(!id || !namaBarang || !harga)
+      return Alert.alert("Error", "Form yang memiliki * wajib di isi!")
+    
     try {
       const updated = await editBarang({database, id_barang: id, nama_barang: namaBarang, barcode: editBarcode, harga: harga})
       

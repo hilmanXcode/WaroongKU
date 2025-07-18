@@ -33,6 +33,10 @@ const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProp
   const [namaBarang, setNamaBarang] = useState('');
 
   const handleSubmit = async () => {
+
+    if(!harga || !namaBarang)
+      return Alert.alert("Error", "Tolong isi form yang memiliki tanda *")
+
     try {
       await addNewBarang({database, nama_barang: namaBarang, barcode, harga})
       setSuccess(true);
