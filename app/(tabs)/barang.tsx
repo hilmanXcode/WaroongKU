@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface modalProps {
   modalValue: boolean
@@ -18,6 +18,12 @@ interface modalProps {
   setSuccess: (status: boolean) => void
   targetId?: string
   setDeleteId?: (text: string) => void;
+}
+interface barang {
+  id: string
+  nama_barang: string
+  barcode: string
+  harga: number
 }
 
 const AddModal = ({ modalValue, setModalValue, database, setSuccess }: modalProps) => {
@@ -221,6 +227,30 @@ const Barang = () => {
   const setBarang = useSetBarang();
   const [deleteId, setDeleteId] = useState("");
   const [successAction, setSuccessAction] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [searchedBarang, setSearchedBarang] = useState<barang[]>([]);
+  const [found, setFound] = useState(false);
+
+
+  useEffect(() => {
+      if(query.trim()){
+        if(barang.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())).length === 0){
+          setLoading(false)
+        }
+        else {
+          setSearchedBarang(barang.filter((item) => item.nama_barang.toLowerCase().startsWith(query.toLowerCase())))
+          setFound(true);
+          setLoading(false);
+        }
+
+      }
+      else {
+        setFound(false)
+        setSearchedBarang([]);
+
+      }
+        
+    }, [query])
 
   useEffect(() => {
       const initDb = async() => {
@@ -305,9 +335,18 @@ const Barang = () => {
           className="mt-5 w-full"
           ListEmptyComponent={(
             
-            <View>
-              <Text>Barang Kosong Bos</Text>
-            </View>
+            <View className="mb-5">
+                {loading ? (
+                  <ActivityIndicator 
+                  size="large"
+                  color="#3b82f6"
+                  className="mt-10 self-center"
+                />
+                ) : found ? null : (
+                  <Text>Barang tidak ditemukan</Text>
+                ) }
+                
+              </View>
           )}
           />
       </View>

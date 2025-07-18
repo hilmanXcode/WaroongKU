@@ -11,11 +11,18 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Toast from 'react-native-toast-message';
 
+interface barang {
+  id: string
+  nama_barang: string
+  barcode: string
+  harga: number
+}
+
 
 export default function Index() {
   const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
   const [query, setQuery] = useState('');
-  const [searchedBarang, setSearchedBarang] = useState<any>([]);
+  const [searchedBarang, setSearchedBarang] = useState<barang[]>([]);
   const [loading, setLoading] = useState(true);
   const [found, setFound] = useState(false);
   const keranjang = useKeranjang();
