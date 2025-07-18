@@ -16,8 +16,8 @@ Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang 
 - 🛒 Tambah & hapus barang dagangan
 - 📝 Edit nama, harga, dan jumlah barang
 - 💵 Lihat total belanja
+- 🛒 Kasir with barcode scan
 
-> Catatan: Fitur seperti **cek stok** atau **reset semua data** belum tersedia yaa — masih dalam proses pengembangan 🛠️
 
 ---
 
