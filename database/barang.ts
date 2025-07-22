@@ -26,7 +26,7 @@ export const addNewBarang = async ({ database, nama_barang, barcode, harga }: ba
 
     try {
       await database.execAsync(`
-        INSERT INTO barang (id, nama_barang, barcode, harga) VALUES ('${uuid}', '${nama_barang}', '${barcode}', '${harga}')
+        INSERT INTO barang (id, nama_barang, barcode, harga) VALUES ('${uuid}', '${nama_barang}', '${barcode}', ${harga})
       `)
     } catch(err){
       console.error(err);
