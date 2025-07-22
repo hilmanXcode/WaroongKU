@@ -60,7 +60,7 @@ export const editBarang = async({ database, id_barang, nama_barang, barcode, har
 
     try {
         await database.execAsync(`
-            UPDATE barang SET nama_barang='${nama_barang}', barcode='${barcode}', harga='${harga}'
+            UPDATE barang SET nama_barang='${nama_barang}', barcode='${barcode}', harga=${harga}
             WHERE id='${id_barang}'
         `);
     } catch(err){
