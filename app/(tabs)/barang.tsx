@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface modalProps {
   modalValue: boolean
@@ -231,7 +231,7 @@ const Barang = () => {
   const setBarang = useSetBarang();
   const [deleteId, setDeleteId] = useState("");
   const [successAction, setSuccessAction] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchedBarang, setSearchedBarang] = useState<barang[]>([]);
   const [found, setFound] = useState(false);
 
@@ -319,10 +319,12 @@ const Barang = () => {
       <AddModal modalValue={addModal} setModalValue={setAddModal} database={database} setSuccess={setSuccessAction} />
       <DeleteModal modalValue={deleteModal} setDeleteId={setDeleteId} setModalValue={setDeleteModal} database={database} targetId={deleteId} setSuccess={setSuccessAction} />
 
-      <View className='px-5'>
+      <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
+          paddingBottom: 10
+      }}>
 
       <FlatList
-          data={barang}
+          data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
             
             <CardBarang {...item} isCashier={false} handleDelete={() => handleDelete(item.id)} />     
@@ -352,8 +354,9 @@ const Barang = () => {
                 
               </View>
           )}
+          scrollEnabled={false}
           />
-      </View>
+      </ScrollView>
     </View>
     
   )

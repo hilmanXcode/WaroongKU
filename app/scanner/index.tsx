@@ -25,6 +25,7 @@ const index = () => {
   const [ scanned, setScanned ] = useState(false);
   const { tambahBarang } = useLocalSearchParams();
   const setBarcode = useSetBarcode();
+  const [wrongScan, setWrongScan] = useState(false);
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
@@ -37,8 +38,17 @@ const index = () => {
     getCameraPermissions();
   }, []);
 
-  const handleScan = useCallback(({type, data}: any) => {
+  const handleScan = useCallback(({bounds, data}: any) => {
+    const { size } = bounds;
+    
+    if(size.width <= 90 && size.height <= 90)
+    {
+      setWrongScan(true);
+      return;
+    }
+
     setTimeout(() => {
+      setWrongScan(false);
       if(tambahBarang && data && !scanned){
         setBarcode(data)
         setScanned(true);
@@ -102,6 +112,15 @@ const index = () => {
           <TouchableOpacity activeOpacity={0.8} onPress={router.back} className="absolute bg-white z-20 top-16 p-5 rounded-full left-5">
             <Ionicons name="arrow-back" size={20} color="#000" />
           </TouchableOpacity>
+          {wrongScan && (
+            <View className="absolute top-64 z-20 w-full p-10">
+              <View className="flex-row justify-center gap-2 items-center p-7 rounded-lg bg-white">
+                <Ionicons name="warning" size={20} />
+                <Text className="font-bold">Mohon dekatkan dan masukkan barcode ke dalam area</Text>
+              </View>
+            </View>
+          )}
+          
           <Overlay/>
         </>
       )}
