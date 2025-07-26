@@ -1,9 +1,15 @@
 import { images } from '@/constants/images'
 import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
+import getDatabase from '@/database/sqlite'
+import { addNewTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import React, { useCallback, useMemo, useState } from 'react'
-import { FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SQLiteDatabase } from 'expo-sqlite'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
+
 
 interface Keranjang {
     id: string
@@ -13,6 +19,14 @@ interface Keranjang {
     handleIncrement: () => void;
     handleDecrement: () => void;
 }
+
+interface transaksi {
+    id: number
+    detail_id: string
+    tanggal: string
+}
+
+
 
 const CardKeranjang = ({id, nama_barang, harga, quantity, handleDecrement, handleIncrement}: Keranjang) => {
     return (
@@ -37,12 +51,48 @@ const CardKeranjang = ({id, nama_barang, harga, quantity, handleDecrement, handl
 }
 
 const index = () => {
-
+    const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
     const keranjang = useKeranjang();
     const setKeranjang = useSetKeranjang();
     const [modalPayment, setModalPayment] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [cashPayment, setCashPayment] = useState(0);
+
+    // Inisialisasi Database
+    useEffect(() => {
+        
+        const initDb = async() => {
+            try {
+                const db = await getDatabase();
+                setDatabase(db);
+
+                await db.execAsync(`
+                    
+
+                    CREATE TABLE IF NOT EXISTS transaksi (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        detail_id varchar(255) NOT NULL,
+                        tanggal date NOT NULL,
+                        UNIQUE(detail_id)
+                    );
+
+                    CREATE TABLE IF NOT EXISTS detail_transaksi (
+                        id varchar(255) NOT NULL,
+                        id_barang varchar(255) NOT NULL,
+                        quantity int(11) NOT NULL,
+                        total_harga int(11) NOT NULL
+                    );
+                `)
+
+            } catch (error) {
+                console.log(error)
+                throw error;
+            }
+        }
+        
+        initDb();
+        
+    }, [])
 
     const totalHarga = useMemo(() => {
         return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
@@ -63,7 +113,9 @@ const index = () => {
     }, [keranjang, setKeranjang])
   
 
-    const handleDecrement = useCallback((id: string) => {
+    const handleDecrement = useCallback(async(id: string) => {
+        
+    
         setKeranjang(prev =>
             prev.map(item => {
                 if(item.id === id){
@@ -74,6 +126,26 @@ const index = () => {
             }).filter(item => item !== null)
         );
     }, [keranjang, setKeranjang]);
+
+    const handlePayment = async() => {
+        if(!database)
+            return Alert.alert("Error", "Gagal mengambil database");
+
+        const uuid = uuidv4();
+
+        try {
+            keranjang.map(async(item) => {
+                await addNewTransaksi({database, id_barang: item.id, quantity: item.quantity, total_harga: item.harga * item.quantity, uuid});
+                
+            })
+        } catch (err){
+            console.log(err)
+        } finally {
+            setModalPayment(!modalPayment);
+            setSuccessModal(true);
+            setKeranjang([]);
+        }
+    }
 
 
 
@@ -158,11 +230,7 @@ const index = () => {
 
                         <View className="flex-row w-full pt-2">
                             <Pressable
-                                onPress={() => {
-                                    setModalPayment(!modalPayment);
-                                    setSuccessModal(true);
-                                    setKeranjang([]);
-                                }}
+                                onPress={handlePayment}
                                 className="bg-blue-500 py-2 px-4 w-full rounded-md flex-row gap-2 items-center justify-center"
                             >
                                 <Ionicons name='cash' color="#fff" size={20} />

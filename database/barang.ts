@@ -33,7 +33,6 @@ export const addNewBarang = async ({ database, nama_barang, barcode, harga }: ba
       throw Error("Gagal menambahkan barang baru");
     }
     
-
 }
 
 export const fetchAllBarang = async ({database}: barangDb) => {

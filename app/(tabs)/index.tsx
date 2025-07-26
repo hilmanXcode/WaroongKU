@@ -102,6 +102,7 @@ export default function Index() {
     useEffect(() => {
       const initBarang = async() => {
         const results = await fetchAllBarang({ database })
+        // console.log(results)
           if(results){
             setBarang(results)
             setLoading(false);
