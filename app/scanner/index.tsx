@@ -23,7 +23,7 @@ const index = () => {
   const keranjang = useKeranjang();
   const setKeranjang = useSetKeranjang();
   const [ scanned, setScanned ] = useState(false);
-  const { tambahBarang } = useLocalSearchParams();
+  const { tambahBarang, editBarang } = useLocalSearchParams();
   const setBarcode = useSetBarcode();
   const [wrongScan, setWrongScan] = useState(false);
 
@@ -53,6 +53,24 @@ const index = () => {
         setBarcode(data)
         setScanned(true);
       }
+      else if(editBarang && data && !scanned){
+        const scannedData: dataBarang | undefined = barang.find((item) => item.barcode === data);
+        if(!scannedData){
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Barang tidak ditemukan',
+            position: 'bottom',
+            swipeable: false,
+            bottomOffset: 80,
+            visibilityTime: 900
+          });
+          return;
+        }
+
+        router.push(`/barang/${scannedData.id}`)
+        setScanned(true);
+      }
       else if(!tambahBarang && !scanned) {
         setScanned(true);
         const scannedData: dataBarang | undefined = barang.find((item) => item.barcode === data);
@@ -61,7 +79,7 @@ const index = () => {
           Toast.show({
             type: 'error',
             text1: 'Error',
-            text2: 'Barang',
+            text2: 'Barang tidak ditemukan',
             position: 'bottom',
             swipeable: false,
             bottomOffset: 80,

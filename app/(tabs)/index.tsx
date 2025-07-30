@@ -102,7 +102,6 @@ export default function Index() {
     useEffect(() => {
       const initBarang = async() => {
         const results = await fetchAllBarang({ database })
-        // console.log(results)
           if(results){
             setBarang(results)
             setLoading(false);
@@ -113,7 +112,7 @@ export default function Index() {
       }
 
       if(database){
-        
+       
         initBarang();
       }
         
@@ -154,7 +153,6 @@ export default function Index() {
           columnWrapperStyle={{
             justifyContent: 'flex-start',
             gap: 20,
-            // marginHorizontal: "auto",
             paddingRight: 5,
             marginBottom: 10
           }}

@@ -1,7 +1,8 @@
 import { images } from '@/constants/images'
 import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
+import { useSetTransaksi } from '@/context/transaksi-context'
 import getDatabase from '@/database/sqlite'
-import { addNewTransaksi } from '@/database/transaksi'
+import { addNewTransaksi, fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { SQLiteDatabase } from 'expo-sqlite'
@@ -20,11 +21,6 @@ interface Keranjang {
     handleDecrement: () => void;
 }
 
-interface transaksi {
-    id: number
-    detail_id: string
-    tanggal: string
-}
 
 
 
@@ -57,6 +53,7 @@ const index = () => {
     const [modalPayment, setModalPayment] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [cashPayment, setCashPayment] = useState(0);
+    const setDataTransaksi = useSetTransaksi();
 
     // Inisialisasi Database
     useEffect(() => {
@@ -67,12 +64,11 @@ const index = () => {
                 setDatabase(db);
 
                 await db.execAsync(`
-                    
-
                     CREATE TABLE IF NOT EXISTS transaksi (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         detail_id varchar(255) NOT NULL,
                         tanggal date NOT NULL,
+                        waktu varchar(255) NOT NULL,
                         UNIQUE(detail_id)
                     );
 
@@ -134,13 +130,16 @@ const index = () => {
         const uuid = uuidv4();
 
         try {
+            // add data transaksi
             keranjang.map(async(item) => {
                 await addNewTransaksi({database, id_barang: item.id, quantity: item.quantity, total_harga: item.harga * item.quantity, uuid});
-                
             })
         } catch (err){
             console.log(err)
         } finally {
+            // update data transaksi
+            const data = await fetchAllTransaksi(database);
+            setDataTransaksi(data);
             setModalPayment(!modalPayment);
             setSuccessModal(true);
             setKeranjang([]);

@@ -72,7 +72,7 @@ const EditBarang = () => {
   
 
   return (
-     <View className='flex'>
+    <View className='flex'>
         <View className='flex-row justify-between items-center px-5 mt-14'>
             <TouchableOpacity onPress={router.back}>
                 <Image source={images.arrowleft} className='size-7'/>

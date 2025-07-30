@@ -309,7 +309,12 @@ const Barang = () => {
       </View>
 
       <View className="px-5">
-        <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={() => console.log("HALO GAN")} />
+        <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={() => router.push({
+          pathname: "/scanner",
+          params: {
+            editBarang: "yes"
+          }
+        })} />
         <TouchableOpacity onPress={() => setAddModal(!addModal)} activeOpacity={0.8} className='w-full bg-blue-500 rounded-md mt-5 p-4 flex-row items-center justify-center gap-2'>
           <Ionicons name='add-circle' size={25} color="#fff" />
           <Text className='text-white font-bold text-xl'>Tambah Barang</Text>
