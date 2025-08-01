@@ -11,12 +11,13 @@ Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang 
 
 ---
 
-## 📱 Fitur-Fitur (sementara)
+## 📱 Fitur-Fitur (Selalu di Update dari Waktu Ke Waktu)
 
 - 🛒 Tambah & hapus barang dagangan
 - 📝 Edit nama, harga, dan jumlah barang
 - 💵 Lihat total belanja
 - 🛒 Kasir with barcode scan
+- 📝 Riwayat Transaksi
 
 
 ---
