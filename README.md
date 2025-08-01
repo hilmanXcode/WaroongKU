@@ -53,6 +53,8 @@ Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang 
 
 4. Scan QR code-nya pakai **Expo Go** di HP kamu 📱
 
+**Note**: Disarankan untuk menggunakan mode development build, karena ada beberapa fungsi native, jika tidak maka akan error.
+
 ---
 
 ## 🧪 Status Proyek
