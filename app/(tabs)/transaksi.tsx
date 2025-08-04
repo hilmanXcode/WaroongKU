@@ -44,6 +44,10 @@ const transaksi = () => {
 
     }, [database])
 
+    useEffect(() => {
+        console.log(date.toISOString().substring(0, 10));
+    }, [date])
+
     return (
         <View className='flex-1 px-5'>
             <View className="flex justify-center items-center mt-14">
@@ -79,15 +83,21 @@ const transaksi = () => {
                     data={dataTransaksi}
                     renderItem={({item}) => (
                         <TouchableOpacity
-                            className='w-full bg-white mb-4 p-5 rounded-md' 
+                            className='w-full bg-white mb-4 p-3 rounded-md' 
                             activeOpacity={0.6}
-                            onPress={() => router.push(`/transaksi/${item.id}`)}
+                            onPress={() => router.push({ pathname: "/transaksi/[id]", params: { id: item.id.toString() } })}
                         >
-                            <View className='flex-row'>
-                                <Text className='font-bold'>#{item.id}</Text>
+                            <View className='flex-row justify-center items-center gap-2'>
+                                <View className='bg-blue-500 p-5 rounded-md'>
+                                    <Ionicons name='cart-sharp' size={20} color="#fff"/>
+                                </View>
+                                <View>
+                                    <Text className='font-bold text-sm'>Transaction ID</Text>
+                                    <Text className='text-sm'>{item.id}</Text>
+                                </View>
                                 <View className='flex-row justify-center items-center ml-auto gap-2'>
                                     <Ionicons name='calendar' color="#3b82f6" size={20} />
-                                    <Text className='font-medium'>{item.tanggal} at {item.waktu}</Text>
+                                    <Text className='font-medium text-sm'>{item.tanggal} at {item.waktu}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>

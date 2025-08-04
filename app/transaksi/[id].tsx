@@ -2,6 +2,7 @@ import { images } from '@/constants/images';
 import { useTransaksi } from '@/context/transaksi-context';
 import getDatabase from '@/database/sqlite';
 import { fetchDetailTransaksi } from '@/database/transaksi';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -89,8 +90,11 @@ const DetailTransaksi = () => {
                     scrollEnabled={false}
                 />
 
-                <Text className='px-5 font-bold'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
-
+                <Text className='px-5 font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
+                <TouchableOpacity activeOpacity={0.8} className='mx-auto mt-5 p-5 rounded-md bg-red-500 flex flex-row items-center gap-2'>
+                    <Ionicons name='trash' color="#fff" size={20}/>
+                    <Text className='font-bold text-white'>Hapus Riwayat Transaksi</Text>
+                </TouchableOpacity>
             </ScrollView>
 
         </View>
