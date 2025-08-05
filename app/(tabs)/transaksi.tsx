@@ -1,10 +1,9 @@
 import { images } from '@/constants/images'
+import { useDatabase } from '@/context/database-context'
 import { useSetTransaksi, useTransaksi } from '@/context/transaksi-context'
-import getDatabase from '@/database/sqlite'
 import { fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { SQLiteDatabase } from 'expo-sqlite'
 import React, { useEffect, useState } from 'react'
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import DatePicker from 'react-native-date-picker'
@@ -48,24 +47,11 @@ const CardTransaksi = ({id, tanggal, waktu}: transaksi) => {
 const transaksi = () => {
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
-    const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
+    const database = useDatabase();
     const dataTransaksi = useTransaksi();
     const setDataTransaksi = useSetTransaksi();
     const [searchedData, setSearchedData] = useState<transaksi[]>([])
     const [toggleFilter, setToggleFilter] = useState(false);
-
-    useEffect(() => {
-        const initDb = async() => {
-            try {
-                const db = await getDatabase();
-                setDatabase(db)
-            }   catch (err) {
-                console.log(err)
-            }
-        }
-
-        initDb();
-    }, [])
 
     useEffect(() => {
         
@@ -77,7 +63,7 @@ const transaksi = () => {
         if(database)
             initData()
 
-    }, [database])
+    }, [])
 
     useEffect(() => {
         const formatedDate = date.toLocaleDateString('id-ID', {

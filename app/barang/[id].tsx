@@ -1,11 +1,10 @@
 import { images } from '@/constants/images';
 import { useBarang, useSetBarang } from '@/context/barang-context';
 import { useBarcode, useSetBarcode } from '@/context/barcode-context';
+import { useDatabase } from '@/context/database-context';
 import { editBarang, fetchAllBarang } from '@/database/barang';
-import getDatabase from '@/database/sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -15,7 +14,7 @@ const EditBarang = () => {
   const barcode = useBarcode();
   const setBarcode = useSetBarcode();
   const { id } = useLocalSearchParams();
-  const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
+  const database = useDatabase();
   const data = barang.find((item) => item.id === id);
 
   if(!data)
@@ -25,20 +24,6 @@ const EditBarang = () => {
   const [harga, setHarga] = useState(data.harga);
   const [editBarcode, setEditBarcode] = useState(data.barcode);
   
-  useEffect(() => {
-    const initDb = async() => {
-      try {
-        const database = await getDatabase();
-        setDatabase(database)
-      } catch (err){
-        console.error(err)
-        throw new Error("Gagal mendapatkan koneksi ke database");
-      }
-    }
-
-    initDb();
-  }, [])
-
   useEffect(() => {
     if(barcode){
       setEditBarcode(barcode)

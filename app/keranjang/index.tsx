@@ -1,12 +1,11 @@
 import { images } from '@/constants/images'
+import { useDatabase } from '@/context/database-context'
 import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
 import { useSetTransaksi } from '@/context/transaksi-context'
-import getDatabase from '@/database/sqlite'
 import { addNewTransaksi, fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { SQLiteDatabase } from 'expo-sqlite'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
@@ -47,48 +46,13 @@ const CardKeranjang = ({id, nama_barang, harga, quantity, handleDecrement, handl
 }
 
 const index = () => {
-    const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
+    const database = useDatabase();
     const keranjang = useKeranjang();
     const setKeranjang = useSetKeranjang();
     const [modalPayment, setModalPayment] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [cashPayment, setCashPayment] = useState(0);
     const setDataTransaksi = useSetTransaksi();
-
-    // Inisialisasi Database
-    useEffect(() => {
-        
-        const initDb = async() => {
-            try {
-                const db = await getDatabase();
-                setDatabase(db);
-
-                await db.execAsync(`
-                    CREATE TABLE IF NOT EXISTS transaksi (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        detail_id varchar(255) NOT NULL,
-                        tanggal date NOT NULL,
-                        waktu varchar(255) NOT NULL,
-                        UNIQUE(detail_id)
-                    );
-
-                    CREATE TABLE IF NOT EXISTS detail_transaksi (
-                        id varchar(255) NOT NULL,
-                        id_barang varchar(255) NOT NULL,
-                        quantity int(11) NOT NULL,
-                        total_harga int(11) NOT NULL
-                    );
-                `)
-
-            } catch (error) {
-                console.log(error)
-                throw error;
-            }
-        }
-        
-        initDb();
-        
-    }, [])
 
     const totalHarga = useMemo(() => {
         return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);

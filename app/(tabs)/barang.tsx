@@ -3,8 +3,8 @@ import SearchBar from '@/components/SearchBar';
 import { images } from '@/constants/images';
 import { useBarang, useSetBarang } from '@/context/barang-context';
 import { useBarcode, useSetBarcode } from '@/context/barcode-context';
+import { useDatabase } from '@/context/database-context';
 import { addNewBarang, fetchAllBarang, hapusBarang } from '@/database/barang';
-import getDatabase from '@/database/sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { SQLiteDatabase } from 'expo-sqlite';
@@ -223,7 +223,7 @@ const DeleteModal = ({ modalValue, setModalValue, database, setSuccess, targetId
 }
 
 const Barang = () => {
-  const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
+  const database = useDatabase();
   const [query, setQuery] = useState("");
   const barang = useBarang();
   const [addModal, setAddModal] = useState(false);
@@ -256,21 +256,6 @@ const Barang = () => {
         
     }, [query])
 
-  useEffect(() => {
-      const initDb = async() => {
-        try {
-          const database = await getDatabase();
-          setDatabase(database);
-
-        } catch (error) {
-          console.log(error)
-          throw error;
-        }
-      }
-
-
-      initDb();
-    }, [])
   
   useEffect(() => {
     const fetchBarang = async() => {

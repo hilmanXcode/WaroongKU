@@ -1,9 +1,8 @@
 import { images } from '@/constants/images';
+import { useDatabase } from '@/context/database-context';
 import { useTransaksi } from '@/context/transaksi-context';
-import getDatabase from '@/database/sqlite';
 import { fetchDetailTransaksi } from '@/database/transaksi';
 import { router, useLocalSearchParams } from 'expo-router';
-import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
@@ -18,24 +17,11 @@ const DetailTransaksi = () => {
     const dataTransaksi = useTransaksi();
     const { id } = useLocalSearchParams();
     const target = dataTransaksi.find((item) => item.id === Number(id))
-    const [database, setDatabase] = useState<SQLiteDatabase | null>(null)
+    const database = useDatabase()
 
     if(!target)
         return router.back();
     
-    useEffect(() => {
-        const initDb = async() => {
-            try {
-                const db = await getDatabase();
-                setDatabase(db)
-            }   catch (err) {
-                console.log(err)
-            }
-        }
-
-        initDb();
-    }, [])
-
     useEffect(() => {
         
         const initData = async() => {
@@ -46,7 +32,7 @@ const DetailTransaksi = () => {
         if(database)
             initData()
 
-    }, [database])
+    }, [])
 
     const totalHarga = useMemo(() => {
         return data.reduce((sum, item) => sum + item.quantity * item.harga, 0);
