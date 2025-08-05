@@ -335,14 +335,6 @@ const Barang = () => {
             <CardBarang {...item} isCashier={false} handleDelete={() => handleDelete(item.id)} />     
           )}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: 'flex-start',
-            gap: 20,
-            // marginHorizontal: "auto",
-            paddingRight: 5,
-            marginBottom: 10
-          }}
           className="mt-5 w-full"
           ListEmptyComponent={(
             

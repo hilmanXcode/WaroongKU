@@ -10,6 +10,39 @@ import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react
 import DatePicker from 'react-native-date-picker'
 import 'react-native-get-random-values'
 
+interface transaksi {
+    id: number
+    detail_id?: string
+    tanggal: string
+    waktu: string
+}
+
+const CardTransaksi = ({id, tanggal, waktu}: transaksi) => {
+    
+    return (
+        <TouchableOpacity
+            className='w-full bg-white mb-4 p-3 rounded-md' 
+            activeOpacity={0.6}
+            onPress={() => router.push({ pathname: "/transaksi/[id]", params: { id: id.toString() } })}
+        >
+            <View className='flex-row justify-center items-center gap-2'>
+                <View className='bg-blue-500 p-5 rounded-md'>
+                    <Ionicons name='cart-sharp' size={20} color="#fff"/>
+                </View>
+                <View>
+                    <Text className='font-bold text-sm'>Transaction ID</Text>
+                    <Text className='text-sm'>{id}</Text>
+                </View>
+                <View className='flex-row justify-center items-center ml-auto gap-2'>
+                    <Ionicons name='calendar' color="#3b82f6" size={20} />
+                    <Text className='font-medium text-sm'>{tanggal} at {waktu}</Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+    )
+
+}
+
 
 
 const transaksi = () => {
@@ -18,6 +51,8 @@ const transaksi = () => {
     const [database, setDatabase] = useState<SQLiteDatabase | null>(null);
     const dataTransaksi = useTransaksi();
     const setDataTransaksi = useSetTransaksi();
+    const [searchedData, setSearchedData] = useState<transaksi[]>([])
+    const [toggleFilter, setToggleFilter] = useState(false);
 
     useEffect(() => {
         const initDb = async() => {
@@ -45,8 +80,16 @@ const transaksi = () => {
     }, [database])
 
     useEffect(() => {
-        console.log(date.toISOString().substring(0, 10));
-    }, [date])
+        const formatedDate = date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const data = dataTransaksi.filter((item) => item.tanggal === formatedDate)
+        
+        setSearchedData(data)
+    }, [toggleFilter])
 
     return (
         <View className='flex-1 px-5'>
@@ -60,7 +103,22 @@ const transaksi = () => {
                 onPress={() => setOpen(!open)}
             >
                 <Ionicons color="#fff" name='time' size={25} />
-                <Text className='text-white font-bold text-xl'>{date.toLocaleDateString()}</Text>
+                <Text className='text-white font-bold text-xl'>{date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                className={`flex-row ${toggleFilter ? 'bg-red-500' : 'bg-blue-500'} justify-center items-center gap-2 py-2 rounded-md mt-2`}
+                onPress={() => setToggleFilter(!toggleFilter)}
+            >
+                <Ionicons color="#fff" name='filter-circle' size={25} />
+                <Text className='text-white font-bold text-xl'>
+                    {toggleFilter ? 'Disable Filter' : 'Apply Filter'}
+                </Text>
             </TouchableOpacity>
             <DatePicker
                 modal
@@ -80,27 +138,9 @@ const transaksi = () => {
             }}>
 
                  <FlatList
-                    data={dataTransaksi}
+                    data={toggleFilter ? searchedData.sort((a, b) => a.tanggal.localeCompare(b.tanggal)) : dataTransaksi.sort((a, b) => a.tanggal.localeCompare(b.tanggal))}
                     renderItem={({item}) => (
-                        <TouchableOpacity
-                            className='w-full bg-white mb-4 p-3 rounded-md' 
-                            activeOpacity={0.6}
-                            onPress={() => router.push({ pathname: "/transaksi/[id]", params: { id: item.id.toString() } })}
-                        >
-                            <View className='flex-row justify-center items-center gap-2'>
-                                <View className='bg-blue-500 p-5 rounded-md'>
-                                    <Ionicons name='cart-sharp' size={20} color="#fff"/>
-                                </View>
-                                <View>
-                                    <Text className='font-bold text-sm'>Transaction ID</Text>
-                                    <Text className='text-sm'>{item.id}</Text>
-                                </View>
-                                <View className='flex-row justify-center items-center ml-auto gap-2'>
-                                    <Ionicons name='calendar' color="#3b82f6" size={20} />
-                                    <Text className='font-medium text-sm'>{item.tanggal} at {item.waktu}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                        <CardTransaksi {...item} />
                     )}
                     
                     className="mt-5 w-full"

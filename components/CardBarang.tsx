@@ -60,21 +60,50 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, value = 0, hand
     }
     else {
         return (
-        <View className='bg-white px-3 py-4 h-[95%] w-[48%] rounded-md'>
-            <Text className='font-semibold'>{nama_barang}</Text>
-            <Text className='mt-2'>Rp. {harga}</Text>
-            <View className='flex-row mt-2 justify-center gap-2'>
-                <TouchableOpacity onPress={() => router.push(`/barang/${id}`)} className='p-2 bg-blue-500 rounded-md flex-row items-center gap-2'>
-                    <Ionicons name='pencil' color="#fff" size={20}></Ionicons>
-                    <Text className='text-white'>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleDelete} className='p-2 bg-red-500 rounded-md flex-row items-center gap-2'>
-                    <Ionicons name='trash' color="#fff" size={20}></Ionicons>
-                    <Text className='text-white'>Delete</Text>
-                </TouchableOpacity>
+        // <View className='bg-white px-3 py-4 h-[95%] w-[48%] rounded-md'>
+        //     <Text className='font-semibold'>{nama_barang}</Text>
+        //     <Text className='mt-2'>Rp. {harga}</Text>
+        //     <View className='flex-row mt-2 justify-center gap-2'>
+        //         <TouchableOpacity onPress={() => router.push(`/barang/${id}`)} className='p-2 bg-blue-500 rounded-md flex-row items-center gap-2'>
+        //             <Ionicons name='pencil' color="#fff" size={20}></Ionicons>
+        //             <Text className='text-white'>Edit</Text>
+        //         </TouchableOpacity>
+        //         <TouchableOpacity onPress={handleDelete} className='p-2 bg-red-500 rounded-md flex-row items-center gap-2'>
+        //             <Ionicons name='trash' color="#fff" size={20}></Ionicons>
+        //             <Text className='text-white'>Delete</Text>
+        //         </TouchableOpacity>
+        //     </View>
+        // </View>
+        <View
+            className='w-full bg-white mb-4 p-3 rounded-md' 
+        >
+            <View className='flex-row justify-center items-center gap-4'>
+                <View className='bg-blue-500 p-5 rounded-md'>
+                    <Ionicons name='logo-dropbox' size={20} color="#fff"/>
+                </View>
+                <View>
+                    <Text className='font-bold'>{nama_barang}</Text>
+                    <Text className=''>Rp. {harga.toLocaleString()}</Text>
+                </View>
+                <View className='flex-row justify-center items-center ml-auto gap-2'>
+                    <TouchableOpacity
+                        className='bg-blue-500 p-2 rounded-md'
+                        activeOpacity={0.8}
+                        onPress={() => router.push(`/barang/${id}`)}
+                    >
+                        <Ionicons name='pencil' color="#fff" size={20} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className='bg-red-500 p-2 rounded-md'
+                        activeOpacity={0.8}
+                        onPress={handleDelete}
+                    >
+                        <Ionicons name='trash' color="#fff" size={20} />
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
-    )
+        )
     }
 
     
