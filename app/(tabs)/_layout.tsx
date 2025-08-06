@@ -36,9 +36,7 @@ const _Layout = () => {
             const results = await fetchAllBarang({ database })
             if(results){
                 setBarang(results)
-                // setLoading(false);
             } else {
-                // setLoading(false);
                 Alert.alert("Gagal Mengambil Data Barang!");
             }
         }
@@ -64,10 +62,12 @@ const _Layout = () => {
     
                         CREATE TABLE IF NOT EXISTS detail_transaksi (
                             id varchar(255) NOT NULL,
-                            id_barang varchar(255) NOT NULL,
+                            nama_barang varchar(255) NOT NULL,
+                            harga int(11) NOT NULL,
                             quantity int(11) NOT NULL,
                             total_harga int(11) NOT NULL
                         );
+
                     `)
                 } catch(err){
                     console.log(err)

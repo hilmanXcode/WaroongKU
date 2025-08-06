@@ -4,12 +4,13 @@ import { Alert } from "react-native";
 interface transaksi {
     database: SQLiteDatabase | null
     uuid: string
-    id_barang: string
+    nama_barang: string
+    harga: number
     quantity: number
     total_harga: number
 }
 
-export const addNewTransaksi = async({database, id_barang, quantity, total_harga, uuid}: transaksi) => {
+export const addNewTransaksi = async({database, nama_barang, harga, quantity, total_harga, uuid}: transaksi) => {
     if(!database)
         return Alert.alert("Error", "Gagal mengambil database");
 
@@ -19,7 +20,7 @@ export const addNewTransaksi = async({database, id_barang, quantity, total_harga
     try {
         await database.execAsync(`
             INSERT OR IGNORE INTO transaksi (detail_id, tanggal, waktu) VALUES ('${uuid}', '${date}', '${dateTime}');
-            INSERT INTO detail_transaksi (id, id_barang, quantity, total_harga) VALUES ('${uuid}', '${id_barang}', ${quantity}, ${total_harga});
+            INSERT INTO detail_transaksi (id, nama_barang, harga, quantity, total_harga) VALUES ('${uuid}', '${nama_barang}', ${harga}, ${quantity}, ${total_harga});
         `)
 
     } catch(err){
@@ -57,11 +58,7 @@ export const fetchDetailTransaksi = async(database : SQLiteDatabase | null, deta
 
     try {
         response = await database.getAllAsync(`
-            SELECT barang.nama_barang, detail_transaksi.quantity, barang.harga
-            FROM barang
-            INNER JOIN
-            detail_transaksi
-            WHERE barang.id = detail_transaksi.id_barang AND detail_transaksi.id = '${detail_id}'
+            SELECT * FROM detail_transaksi WHERE id = '${detail_id}'
         `)
 
     } catch(err){

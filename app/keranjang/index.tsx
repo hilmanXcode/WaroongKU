@@ -96,7 +96,7 @@ const index = () => {
         try {
             // add data transaksi
             keranjang.map(async(item) => {
-                await addNewTransaksi({database, id_barang: item.id, quantity: item.quantity, total_harga: item.harga * item.quantity, uuid});
+                await addNewTransaksi({database, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity, total_harga: item.harga * item.quantity, uuid});
             })
         } catch (err){
             console.log(err)
