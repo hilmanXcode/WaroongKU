@@ -65,9 +65,16 @@ const EditBarang = () => {
             <Text className='font-bold text-xl mx-auto'>Edit Barang</Text>
         </View>
 
-        <View className='flex flex-row items-center px-10 h-screen -mt-16'>
-          <View>
-            <Text className='text-2xl font-bold mb-2'>Edit Data Barang {data.nama_barang}</Text>
+        <View className='flex flex-row items-center -mt-24 px-10 h-screen'>
+          <View className='bg-white p-5 rounded-md'>
+            <View className='flex flex-row items-center gap-2 mb-2'>
+              <View className='bg-blue-500 p-4 rounded-md'>
+                <Ionicons name='pencil' size={22} color="#fff" />
+              </View>
+              <View>
+                <Text className='text-2xl font-bold'>Edit Data Barang {data.nama_barang}</Text>
+              </View>
+            </View>
             <View>
                 <Text className="text-base font-medium">
                     Nama Barang <Text className="text-red-600">*</Text>

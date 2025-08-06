@@ -5,7 +5,7 @@ import { fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import 'react-native-get-random-values'
 
@@ -119,22 +119,18 @@ const transaksi = () => {
                     setOpen(false)
                 }}
             />
-            <ScrollView className="flex" showsVerticalScrollIndicator={false} contentContainerStyle={{
-                        paddingBottom: 10
-            }}>
+            
 
-                 <FlatList
-                    data={toggleFilter ? searchedData.sort((a, b) => a.tanggal.localeCompare(b.tanggal)) : dataTransaksi.sort((a, b) => a.tanggal.localeCompare(b.tanggal))}
-                    renderItem={({item}) => (
-                        <CardTransaksi {...item} />
-                    )}
-                    
-                    className="mt-5 w-full"
-                    keyExtractor={(item) => item.id.toString()}
-                    scrollEnabled={false}
-                />
+                <FlatList
+                data={toggleFilter ? searchedData.sort((a, b) => a.tanggal.localeCompare(b.tanggal)) : dataTransaksi.sort((a, b) => a.tanggal.localeCompare(b.tanggal))}
+                renderItem={({item}) => (
+                    <CardTransaksi {...item} />
+                )}
+                
+                className="mt-5 w-full"
+                keyExtractor={(item) => item.id.toString()}
+            />
 
-            </ScrollView>
         </View>
     )
 }

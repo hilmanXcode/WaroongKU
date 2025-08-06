@@ -4,7 +4,7 @@ import { useTransaksi } from '@/context/transaksi-context';
 import { fetchDetailTransaksi } from '@/database/transaksi';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 interface detailTransaksi {
     nama_pembeli: string
@@ -49,15 +49,6 @@ const DetailTransaksi = () => {
                 <Text className='font-bold text-xl mx-auto'>Detail Transaksi</Text>
             </View>
             
-            
-
-            <ScrollView className="flex" showsVerticalScrollIndicator={false} contentContainerStyle={{
-                        paddingBottom: 10
-            }}>
-
-                {data.at(0)?.nama_pembeli && (
-                    <Text className='px-5 font-semibold mt-5'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
-                )}
 
                  <FlatList
                     data={data}
@@ -74,15 +65,17 @@ const DetailTransaksi = () => {
                             </View>
                         </View>
                     )}
-                    
+                    ListHeaderComponent={() => (
+                        <Text className='font-semibold mb-2'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
+                    )}
                     className="mt-5 px-5 w-full"
                     keyExtractor={(item) => item.nama_barang}
-                    scrollEnabled={false}
+                    ListFooterComponent={() => (
+                        <Text className='px-5 font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
+                    )}
                 />
 
-                <Text className='px-5 font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
                 
-            </ScrollView>
 
         </View>
     )

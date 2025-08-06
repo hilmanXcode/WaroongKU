@@ -6,7 +6,7 @@ import { fetchAllHutang } from '@/database/hutang'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-get-random-values'
 
 interface hutang {
@@ -71,22 +71,17 @@ const hutang = () => {
             </View>
             {/* Search Code */}
             <SearchBar value={search} onChangeText={(text: string) => setSearch(text)} />
-            <ScrollView className="flex" showsVerticalScrollIndicator={false} contentContainerStyle={{
-                        paddingBottom: 10
-            }}>
 
-                 <FlatList
-                    data={hutang}
-                    renderItem={({item}) => (
-                        <CardHutang {...item} />
-                    )}
-                    
-                    className="mt-5 w-full"
-                    keyExtractor={(item) => item.id.toString()}
-                    scrollEnabled={false}
-                />
-
-            </ScrollView>
+                <FlatList
+                data={hutang}
+                renderItem={({item}) => (
+                    <CardHutang {...item} />
+                )}
+                
+                className="mt-5 w-full"
+                keyExtractor={(item) => item.id.toString()}
+                
+            />
         </View>
     )
 }

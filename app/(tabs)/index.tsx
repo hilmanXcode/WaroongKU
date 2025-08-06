@@ -5,7 +5,7 @@ import { useBarang } from "@/context/barang-context";
 import { useKeranjang, useSetKeranjang } from "@/context/keranjang-context";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import Toast from 'react-native-toast-message';
 
 interface barang {
@@ -88,11 +88,6 @@ export default function Index() {
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={onPressBarcode} />
         
       </View>
- 
-      <ScrollView className="flex px-5" showsVerticalScrollIndicator={false} contentContainerStyle={{
-            paddingBottom: 10
-        }}>
-
 
       <FlatList
           data={query.length ? searchedBarang : barang}
@@ -108,7 +103,7 @@ export default function Index() {
             paddingRight: 5,
             marginBottom: 10
           }}
-          className="mt-5 w-full"
+          className="mt-5 px-5 w-full"
           ListEmptyComponent={(
             
             <View className="mb-5">
@@ -124,19 +119,20 @@ export default function Index() {
               
             </View>
           )}
-          scrollEnabled={false}
+          ListFooterComponent={
+            keranjang.length ? (
+              <TouchableOpacity onPress={() => router.push("/keranjang")} activeOpacity={0.8} className="flex-1 bg-blue-500 p-5 rounded-md">
+                <Text className="font-bold text-white text-center">
+                  Cek Keranjang 
+                </Text>
+              </TouchableOpacity>
+            ): null
+          }
         />
         
-      {keranjang.length ? (
-        <TouchableOpacity onPress={() => router.push("/keranjang")} activeOpacity={0.8} className="flex-1 bg-blue-500 p-5 rounded-md">
-          <Text className="font-bold text-white text-center">
-            Cek Keranjang 
-          </Text>
-        </TouchableOpacity>
-      ): null}
+      
       
         
-      </ScrollView>
     </View>
   );
 }
