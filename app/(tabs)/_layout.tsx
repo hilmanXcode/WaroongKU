@@ -62,11 +62,29 @@ const _Layout = () => {
     
                         CREATE TABLE IF NOT EXISTS detail_transaksi (
                             id varchar(255) NOT NULL,
+                            nama_pembeli varchar(255),
                             nama_barang varchar(255) NOT NULL,
                             harga int(11) NOT NULL,
-                            quantity int(11) NOT NULL,
-                            total_harga int(11) NOT NULL
+                            quantity int(11) NOT NULL
                         );
+
+                        CREATE TABLE IF NOT EXISTS hutang (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            detail_hutang varchar(255) NOT NULL,
+                            nama_pembeli varchar(255) NOT NULL,
+                            total_bayar int(11) NOT NULL,
+                            tanggal date NOT NULL,
+                            waktu varchar(255) NOT NULL,
+                            UNIQUE(detail_hutang)
+                        );
+
+                        CREATE TABLE IF NOT EXISTS detail_hutang (
+                            id varchar(255) NOT NULL,
+                            nama_pembeli varchar(255),
+                            nama_barang varchar(255) NOT NULL,
+                            harga int(11) NOT NULL,
+                            quantity int(11) NOT NULL
+                        )
 
                     `)
                 } catch(err){

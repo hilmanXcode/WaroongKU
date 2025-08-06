@@ -1,7 +1,9 @@
 import { images } from '@/constants/images'
 import { useDatabase } from '@/context/database-context'
+import { useSetHutang } from '@/context/hutang-context'
 import { useKeranjang, useSetKeranjang } from '@/context/keranjang-context'
 import { useSetTransaksi } from '@/context/transaksi-context'
+import { addOrUpdateHutang, fetchAllHutang } from '@/database/hutang'
 import { addNewTransaksi, fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
@@ -23,7 +25,7 @@ interface Keranjang {
 
 
 
-const CardKeranjang = ({id, nama_barang, harga, quantity, handleDecrement, handleIncrement}: Keranjang) => {
+const CardKeranjang = ({nama_barang, harga, quantity, handleDecrement, handleIncrement}: Keranjang) => {
     return (
         <View className='flex-row bg-white rounded-md p-5 w-full mb-5'>
             <View>
@@ -53,6 +55,8 @@ const index = () => {
     const [successModal, setSuccessModal] = useState(false);
     const [cashPayment, setCashPayment] = useState(0);
     const setDataTransaksi = useSetTransaksi();
+    const setDataHutang = useSetHutang();
+    const [namaPembeli, setNamaPembeli] = useState('');
 
     const totalHarga = useMemo(() => {
         return keranjang.reduce((sum, item) => sum + item.quantity * item.harga, 0);
@@ -93,20 +97,36 @@ const index = () => {
 
         const uuid = uuidv4();
 
+        if(cashPayment < totalHarga && namaPembeli === ''){
+            Alert.alert("Info", "Tolong masukkan nama pelanggan untuk dimasukkan ke dalam catatan hutang")
+            return;
+        }
+
         try {
+            
             // add data transaksi
             keranjang.map(async(item) => {
-                await addNewTransaksi({database, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity, total_harga: item.harga * item.quantity, uuid});
+                if(cashPayment < totalHarga && namaPembeli !== ''){
+                    await addOrUpdateHutang({database, nama_pembeli: namaPembeli, total_bayar: cashPayment, uuid: uuid, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity})
+                }
+
+                await addNewTransaksi({database, nama_pembeli: namaPembeli, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity, uuid});
+            
             })
+
         } catch (err){
             console.log(err)
         } finally {
             // update data transaksi
-            const data = await fetchAllTransaksi(database);
-            setDataTransaksi(data);
+            const dataTransaksi = await fetchAllTransaksi(database);
+            setDataTransaksi(dataTransaksi);
+            // update data hutang
+            const dataHutang = await fetchAllHutang(database);
+            setDataHutang(dataHutang);
             setModalPayment(!modalPayment);
             setSuccessModal(true);
             setKeranjang([]);
+            setNamaPembeli('');
         }
     }
 
@@ -186,6 +206,16 @@ const index = () => {
                                     keyboardType="numeric"
                                     value={cashPayment.toString()}
                                     onChangeText={(number: string) => setCashPayment(Number(number))}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded mt-1"
+                                />
+                            </View>
+                            <View className='mt-2'>
+                                <Text className="text-base font-medium">
+                                    Masukkan nama pembeli
+                                </Text>
+                                <TextInput
+                                    value={namaPembeli}
+                                    onChangeText={(value: string) => setNamaPembeli(value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded mt-1"
                                 />
                             </View>

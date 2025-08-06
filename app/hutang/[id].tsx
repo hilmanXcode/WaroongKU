@@ -1,38 +1,44 @@
 import { images } from '@/constants/images';
 import { useDatabase } from '@/context/database-context';
-import { useTransaksi } from '@/context/transaksi-context';
-import { fetchDetailTransaksi } from '@/database/transaksi';
+import { useHutang } from '@/context/hutang-context';
+import { fetchDetailHutang } from '@/database/hutang';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import 'react-native-get-random-values';
 
-interface detailTransaksi {
+
+interface detailHutang {
+    id: string
     nama_pembeli: string
     nama_barang: string
     harga: number
     quantity: number
 }
 
-const DetailTransaksi = () => {
-    const [data, setData] = useState<detailTransaksi[] | []>([]);
-    const dataTransaksi = useTransaksi();
+const DetailHutang = () => {
+    const [data, setData] = useState<detailHutang[] | []>([])
     const { id } = useLocalSearchParams();
-    const target = dataTransaksi.find((item) => item.id === Number(id))
+    const dataHutang = useHutang();
+    const target = dataHutang.find((item) => item.id === Number(id))
     const database = useDatabase()
 
     if(!target)
         return router.back();
     
+
     useEffect(() => {
-        
         const initData = async() => {
-            const data = await fetchDetailTransaksi(database, target.detail_id);
-            setData(data);
+            try {
+                const data = await fetchDetailHutang(database, target.detail_hutang);
+                setData(data)
+            } catch(err){
+                console.log(err)
+                throw err;
+            }
         }
 
-        if(database)
-            initData()
-
+        initData();
     }, [])
 
     const totalHarga = useMemo(() => {
@@ -46,20 +52,19 @@ const DetailTransaksi = () => {
                 <TouchableOpacity onPress={router.back}>
                     <Image source={images.arrowleft} className='size-7'/>
                 </TouchableOpacity>
-                <Text className='font-bold text-xl mx-auto'>Detail Transaksi</Text>
+                <Text className='font-bold text-xl mx-auto'>Detail Hutang</Text>
             </View>
             
             
 
             <ScrollView className="flex" showsVerticalScrollIndicator={false} contentContainerStyle={{
-                        paddingBottom: 10
+                paddingBottom: 10
             }}>
-
                 {data.at(0)?.nama_pembeli && (
                     <Text className='px-5 font-semibold mt-5'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
                 )}
 
-                 <FlatList
+                    <FlatList
                     data={data}
                     renderItem={({item}) => (
                         <View className='flex-row bg-white rounded-md p-5 w-full mb-4'>
@@ -76,11 +81,12 @@ const DetailTransaksi = () => {
                     )}
                     
                     className="mt-5 px-5 w-full"
-                    keyExtractor={(item) => item.nama_barang}
+                    keyExtractor={(item, index) => index.toLocaleString()}
                     scrollEnabled={false}
                 />
 
                 <Text className='px-5 font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
+                <Text className='px-5 font-bold text-center text-xl pb-28'>Sisa Hutang: Rp.{(totalHarga - target.total_bayar).toLocaleString()}</Text>
                 
             </ScrollView>
 
@@ -88,4 +94,4 @@ const DetailTransaksi = () => {
     )
 }
 
-export default DetailTransaksi
+export default DetailHutang

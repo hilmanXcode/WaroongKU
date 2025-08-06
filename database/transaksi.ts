@@ -5,12 +5,12 @@ interface transaksi {
     database: SQLiteDatabase | null
     uuid: string
     nama_barang: string
+    nama_pembeli: string
     harga: number
     quantity: number
-    total_harga: number
 }
 
-export const addNewTransaksi = async({database, nama_barang, harga, quantity, total_harga, uuid}: transaksi) => {
+export const addNewTransaksi = async({database, nama_barang, nama_pembeli, harga, quantity, uuid}: transaksi) => {
     if(!database)
         return Alert.alert("Error", "Gagal mengambil database");
 
@@ -20,7 +20,7 @@ export const addNewTransaksi = async({database, nama_barang, harga, quantity, to
     try {
         await database.execAsync(`
             INSERT OR IGNORE INTO transaksi (detail_id, tanggal, waktu) VALUES ('${uuid}', '${date}', '${dateTime}');
-            INSERT INTO detail_transaksi (id, nama_barang, harga, quantity, total_harga) VALUES ('${uuid}', '${nama_barang}', ${harga}, ${quantity}, ${total_harga});
+            INSERT INTO detail_transaksi (id, nama_pembeli, nama_barang, harga, quantity) VALUES ('${uuid}', '${nama_pembeli}', '${nama_barang}', ${harga}, ${quantity});
         `)
 
     } catch(err){
