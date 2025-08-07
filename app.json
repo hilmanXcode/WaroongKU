@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "WarungKU",
-    "slug": "WarungKU",
+    "name": "WaroongKU",
+    "slug": "WaroongKU",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "warungku",
+    "icon": "./assets/images/logo.png",
+    "scheme": "WaroongKU",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hilmanxcode.WarungKU"
+      "bundleIdentifier": "com.hilmanxcode.WaroongKU"
     },
     "android": {
       "adaptiveIcon": {

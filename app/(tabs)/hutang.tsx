@@ -4,9 +4,10 @@ import { useDatabase } from '@/context/database-context'
 import { useHutang, useSetHutang } from '@/context/hutang-context'
 import { fetchAllHutang } from '@/database/hutang'
 import { Ionicons } from '@expo/vector-icons'
+import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-get-random-values'
 
 interface hutang {
@@ -72,12 +73,12 @@ const hutang = () => {
             {/* Search Code */}
             <SearchBar value={search} onChangeText={(text: string) => setSearch(text)} />
 
-                <FlatList
+            <FlashList
                 data={hutang}
                 renderItem={({item}) => (
                     <CardHutang {...item} />
                 )}
-                
+                estimatedItemSize={91}
                 className="mt-5 w-full"
                 keyExtractor={(item) => item.id.toString()}
                 

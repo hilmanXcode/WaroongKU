@@ -10,6 +10,13 @@ interface transaksi {
     quantity: number
 }
 
+interface dataTransaksi {
+    detail_id: string
+    id: number
+    tanggal: string
+    waktu: string
+}
+
 export const addNewTransaksi = async({database, nama_barang, nama_pembeli, harga, quantity, uuid}: transaksi) => {
     if(!database)
         return Alert.alert("Error", "Gagal mengambil database");
@@ -30,18 +37,19 @@ export const addNewTransaksi = async({database, nama_barang, nama_pembeli, harga
 }
 
 export const fetchAllTransaksi = async(database: SQLiteDatabase | null) => {
-    if(!database)
-        return Alert.alert("Error", "Gagal mengambil database");
+    if(!database){
+        Alert.alert("Error", "Gagal mengambil database");
+        return [];
+    }
 
-    let response: any = [];
+    let response: dataTransaksi[] | [];
 
     try {
-        response = await database.getAllAsync(`
-            SELECT id, detail_id, strftime('%d/%m/%Y', tanggal) as tanggal, waktu FROM transaksi;
-        `)
+        response = await database.getAllAsync("SELECT id, detail_id, strftime('%d/%m/%Y', tanggal) as tanggal, waktu FROM transaksi;")
 
     } catch (err) {
         console.log(err)
+        throw err
     }
 
     return response;

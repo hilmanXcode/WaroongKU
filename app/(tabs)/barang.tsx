@@ -6,10 +6,11 @@ import { useBarcode, useSetBarcode } from '@/context/barcode-context';
 import { useDatabase } from '@/context/database-context';
 import { addNewBarang, fetchAllBarang, hapusBarang } from '@/database/barang';
 import { Ionicons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import { SQLiteDatabase } from 'expo-sqlite';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface modalProps {
   modalValue: boolean
@@ -286,14 +287,14 @@ const Barang = () => {
 
   return (
     <View
-      className="flex-1"
+      className="flex-1 px-5"
     >
       <View className="flex justify-center items-center mt-14">
         <Image source={images.logo} className="size-12" tintColor="#3b82f6" />
         <Text className="text-xl font-bold text-blue-500 italic -mt-3">WaroongKU</Text>
       </View>
 
-      <View className="px-5">
+      <View className="">
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={() => router.push({
           pathname: "/scanner",
           params: {
@@ -309,14 +310,15 @@ const Barang = () => {
       <AddModal modalValue={addModal} setModalValue={setAddModal} database={database} setSuccess={setSuccessAction} />
       <DeleteModal modalValue={deleteModal} setDeleteId={setDeleteId} setModalValue={setDeleteModal} database={database} targetId={deleteId} setSuccess={setSuccessAction} />
 
-      <FlatList
+      <FlashList
           data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
             
             <CardBarang {...item} isCashier={false} handleDelete={() => handleDelete(item.id)} />     
           )}
           keyExtractor={(item) => item.id}
-          className="mt-5 px-5 w-full"
+          className="mt-5 w-full"
+          estimatedItemSize={91}
           ListEmptyComponent={(
             
             <View className="mb-5">

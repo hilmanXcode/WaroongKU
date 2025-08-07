@@ -2,9 +2,10 @@ import { images } from '@/constants/images';
 import { useDatabase } from '@/context/database-context';
 import { useTransaksi } from '@/context/transaksi-context';
 import { fetchDetailTransaksi } from '@/database/transaksi';
+import { FlashList } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 interface detailTransaksi {
     nama_pembeli: string
@@ -41,8 +42,8 @@ const DetailTransaksi = () => {
 
 
     return (
-        <View className='flex'>
-            <View className='flex-row justify-between items-center px-5 mt-14'>
+        <View className='flex-1 px-5'>
+            <View className='flex-row justify-between items-center mt-14'>
                 <TouchableOpacity onPress={router.back}>
                     <Image source={images.arrowleft} className='size-7'/>
                 </TouchableOpacity>
@@ -50,7 +51,7 @@ const DetailTransaksi = () => {
             </View>
             
 
-                 <FlatList
+                 <FlashList
                     data={data}
                     renderItem={({item}) => (
                         <View className='flex-row bg-white rounded-md p-5 w-full mb-4'>
@@ -65,13 +66,17 @@ const DetailTransaksi = () => {
                             </View>
                         </View>
                     )}
-                    ListHeaderComponent={() => (
-                        <Text className='font-semibold mb-2'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
-                    )}
-                    className="mt-5 px-5 w-full"
-                    keyExtractor={(item) => item.nama_barang}
+                    estimatedItemSize={91}
+                    ListHeaderComponent={
+                        data.at(0)?.nama_pembeli ? (
+                            <Text className='font-semibold mb-2'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
+
+                        ) : null
+                    }
+                    className="mt-5 w-full"
+                    keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (
-                        <Text className='px-5 font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
+                        <Text className='font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
                     )}
                 />
 

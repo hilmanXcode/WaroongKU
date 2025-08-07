@@ -3,9 +3,10 @@ import SearchBar from "@/components/SearchBar";
 import { images } from "@/constants/images";
 import { useBarang } from "@/context/barang-context";
 import { useKeranjang, useSetKeranjang } from "@/context/keranjang-context";
+import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
 import Toast from 'react-native-toast-message';
 
 interface barang {
@@ -78,32 +79,24 @@ export default function Index() {
 
   return (
     <View
-     className="flex-1"
+     className="flex-1 px-5"
     >
       <View className="flex justify-center items-center mt-14">
         <Image source={images.logo} className="size-12" tintColor="#3b82f6" />
         <Text className="text-xl font-bold text-blue-500 italic -mt-3">WaroongKU</Text>
       </View>
-      <View className="px-5">
+      <View className="">
         <SearchBar value={query} onChangeText={(text: string) => setQuery(text)} onPressBarcode={onPressBarcode} />
         
       </View>
 
-      <FlatList
+      <FlashList
           data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
-            
             <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} />     
           )}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: 'flex-start',
-            gap: 20,
-            paddingRight: 5,
-            marginBottom: 10
-          }}
-          className="mt-5 px-5 w-full"
+          className="mt-5"
           ListEmptyComponent={(
             
             <View className="mb-5">
@@ -119,6 +112,7 @@ export default function Index() {
               
             </View>
           )}
+          estimatedItemSize={91}
           ListFooterComponent={
             keranjang.length ? (
               <TouchableOpacity onPress={() => router.push("/keranjang")} activeOpacity={0.8} className="flex-1 bg-blue-500 p-5 rounded-md">

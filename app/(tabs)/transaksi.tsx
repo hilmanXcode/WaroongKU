@@ -3,9 +3,10 @@ import { useDatabase } from '@/context/database-context'
 import { useSetTransaksi, useTransaksi } from '@/context/transaksi-context'
 import { fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
+import { FlashList } from "@shopify/flash-list"
 import { router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Text, TouchableOpacity, View } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import 'react-native-get-random-values'
 
@@ -120,16 +121,19 @@ const transaksi = () => {
                 }}
             />
             
-
-                <FlatList
-                data={toggleFilter ? searchedData.sort((a, b) => a.tanggal.localeCompare(b.tanggal)) : dataTransaksi.sort((a, b) => a.tanggal.localeCompare(b.tanggal))}
-                renderItem={({item}) => (
-                    <CardTransaksi {...item} />
-                )}
-                
-                className="mt-5 w-full"
-                keyExtractor={(item) => item.id.toString()}
-            />
+                <FlashList
+                    data={toggleFilter ? searchedData.sort((a, b) => a.tanggal.localeCompare(b.tanggal)) : dataTransaksi.sort((a, b) => a.tanggal.localeCompare(b.tanggal))}
+                    renderItem={({item}) => (
+                        <CardTransaksi {...item} />
+                    )}
+                    className='mt-5 w-full'
+                    keyExtractor={(item) => item.id.toString()}
+                    ListEmptyComponent={() => (
+                        <Text>Data Kosong</Text>
+                    )}
+                    estimatedItemSize={91}
+                    
+                />
 
         </View>
     )

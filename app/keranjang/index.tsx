@@ -6,9 +6,10 @@ import { useSetTransaksi } from '@/context/transaksi-context'
 import { addOrUpdateHutang, fetchAllHutang } from '@/database/hutang'
 import { addNewTransaksi, fetchAllTransaksi } from '@/database/transaksi'
 import { Ionicons } from '@expo/vector-icons'
+import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import React, { useCallback, useMemo, useState } from 'react'
-import { Alert, FlatList, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Modal, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -27,7 +28,10 @@ interface Keranjang {
 
 const CardKeranjang = ({nama_barang, harga, quantity, handleDecrement, handleIncrement}: Keranjang) => {
     return (
-        <View className='flex-row bg-white rounded-md p-5 w-full mb-5'>
+        <View
+            className='flex-row bg-white rounded-md p-5 w-full mb-5'
+             
+        >
             <View>
                 <Text className='font-bold'>{nama_barang}</Text>
                 <Text className='mt-1'>Rp. {harga.toLocaleString()}</Text>
@@ -106,6 +110,7 @@ const index = () => {
             
             // add data transaksi
             keranjang.map(async(item) => {
+
                 if(cashPayment < totalHarga && namaPembeli !== ''){
                     await addOrUpdateHutang({database, nama_pembeli: namaPembeli, total_bayar: cashPayment, uuid: uuid, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity})
                 }
@@ -114,15 +119,16 @@ const index = () => {
             
             })
 
-        } catch (err){
-            console.log(err)
-        } finally {
-            // update data transaksi
-            const dataTransaksi = await fetchAllTransaksi(database);
-            setDataTransaksi(dataTransaksi);
             // update data hutang
             const dataHutang = await fetchAllHutang(database);
             setDataHutang(dataHutang);
+            // update data transaksi
+            const dataTransaksi = await fetchAllTransaksi(database);
+            setDataTransaksi(dataTransaksi);
+        } catch (err){
+            console.log(err)
+        } finally {
+            
             setModalPayment(!modalPayment);
             setSuccessModal(true);
             setKeranjang([]);
@@ -134,8 +140,8 @@ const index = () => {
 
     return (
         <>
-            <View className='flex'>
-                <View className='flex-row justify-between items-center px-5 mt-14'>
+            <View className='flex-1 px-5'>
+                <View className='flex-row justify-between items-center mt-14'>
                     <TouchableOpacity onPress={router.back}>
                         <Image source={images.arrowleft} className='size-7'/>
                     </TouchableOpacity>
@@ -145,25 +151,25 @@ const index = () => {
                     </TouchableOpacity>
 
                 </View>
-                <View className='flex-col gap-4 items-center px-5 mt-10'>
-                    <FlatList
-                        data={keranjang}
-                        renderItem={({item}) => (
-                            <CardKeranjang {...item} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
-                        )}
-                        keyExtractor={(item) => item.id}
-                        
-                        className="w-full"
-                        ListEmptyComponent={(
-                            <View className='flex justify-center items-center h-screen '>
-                                <View className='-mt-56'>
-                                    <Image source={images.emptyCart} className='w-52 h-52 mx-auto' />
-                                    <Text className='text-center font-bold'>Scan/Cari barang untuk menambahkan ke keranjang</Text>
-                                </View>
+                
+                <FlashList
+                    data={keranjang}
+                    renderItem={({item}) => (
+                        <CardKeranjang {...item} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} handleDecrement={() => handleDecrement(item.id)} />     
+                    )}
+                    keyExtractor={(item) => item.id}
+                    estimatedItemSize={91}
+                    numColumns={1}
+                    className="w-full mt-6"
+                    ListEmptyComponent={(
+                        <View className='flex justify-center items-center h-screen '>
+                            <View className='-mt-56'>
+                                <Image source={images.emptyCart} className='w-52 h-52 mx-auto' />
+                                <Text className='text-center font-bold'>Scan/Cari barang untuk menambahkan ke keranjang</Text>
                             </View>
-                        )}
-                        />
-                </View>
+                        </View>
+                    )}
+                />
                 {/* Modal Pembayaran */}
                 <Modal
                     visible={modalPayment}
