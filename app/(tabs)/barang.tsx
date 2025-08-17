@@ -174,7 +174,7 @@ const DeleteModal = ({ modalValue, setModalValue, database, setSuccess, targetId
     } catch(err){
       setSuccess(false);
       console.error(err);
-      throw Error("Gagal menambahkan barang baru");
+      throw Error("Gagal menghapus barang");
     }
 
 
