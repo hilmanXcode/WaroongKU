@@ -18,6 +18,7 @@ Selamat datang di repo **WaroongKU** — aplikasi warung digital sederhana yang 
 - 💵 Lihat total belanja
 - 🛒 Kasir with barcode scan
 - 📝 Riwayat Transaksi
+- 📝 Pencatatan Hutang
 
 
 ---
