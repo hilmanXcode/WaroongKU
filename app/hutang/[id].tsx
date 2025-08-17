@@ -56,11 +56,6 @@ const DetailHutang = () => {
                 </TouchableOpacity>
                 <Text className='font-bold text-xl mx-auto'>Detail Hutang</Text>
             </View>
-            
-            
-
-           
-                
 
             <FlashList
 

@@ -28,28 +28,30 @@ export default function Index() {
   
   
   const handleIncrement = useCallback((id: string, nama_barang: string, barcode: string, harga: number) => {
+    setKeranjang(prevKeranjang => {
+      if(prevKeranjang.find((item) => item.id === id)){
+        return prevKeranjang.map(item => 
+          item.id === id ? {...item, quantity: item.quantity + 1} : item
+        );
+      } else {
+        return [
+          ...prevKeranjang,
+          {id, nama_barang, barcode, harga, quantity: 1}
+        ];
+      }
+    });
 
-      if(keranjang.find((item) => item.id === id)){
-        setKeranjang(prevKeranjang => {
-          return prevKeranjang.map(item => item.id === id ? {...item, quantity: item.quantity + 1} : item)    
-        });
-      }
-      else {
-        setKeranjang((keranjang) => [
-            ...keranjang,
-            {id: id, nama_barang: nama_barang, barcode: barcode, harga: harga, quantity: 1}
-        ])
-      }
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Berhasil menambahkan ke keranjang',
-        position: 'bottom',
-        swipeable: false,
-        bottomOffset: 80,
-        visibilityTime: 900
-      });
-    }, [keranjang, setKeranjang])
+    Toast.show({
+      type: 'success',
+      text1: 'Success',
+      text2: 'Berhasil menambahkan ke keranjang',
+      position: 'bottom',
+      swipeable: false,
+      bottomOffset: 80,
+      visibilityTime: 900
+    });
+  }, [setKeranjang]);
+
   
 
     useEffect(() => {
@@ -93,7 +95,7 @@ export default function Index() {
       <FlashList
           data={query.length ? searchedBarang : barang}
           renderItem={({item}) => (
-            <CardBarang {...item} isCashier={true} value={0} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} />     
+            <CardBarang {...item} isCashier={true} handleIncrement={() => handleIncrement(item.id, item.nama_barang, item.barcode, item.harga)} />     
           )}
           keyExtractor={(item) => item.id}
           className="mt-5"
@@ -112,6 +114,7 @@ export default function Index() {
               
             </View>
           )}
+          extraData={keranjang}
           estimatedItemSize={91}
           ListFooterComponent={
             keranjang.length ? (

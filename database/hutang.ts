@@ -63,7 +63,7 @@ export const addOrUpdateHutang = async({database, uuid, nama_pembeli, total_baya
 
             const updateTotal = data.total_bayar += total_bayar;
             await database.execAsync(`
-                UPDATE hutang SET total_bayar = ${updateTotal} WHERE nama_pembeli = '${nama_pembeli}';
+                UPDATE hutang SET total_bayar = ${updateTotal}, tanggal = '${date}', waktu = '${dateTime}' WHERE nama_pembeli = '${nama_pembeli}';
 
                 INSERT INTO detail_hutang VALUES ('${data.detail_hutang}', '${nama_pembeli}', '${nama_barang}', ${harga}, ${quantity});
             `)

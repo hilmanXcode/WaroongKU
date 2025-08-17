@@ -2,6 +2,7 @@ import { images } from '@/constants/images';
 import { useDatabase } from '@/context/database-context';
 import { useTransaksi } from '@/context/transaksi-context';
 import { fetchDetailTransaksi } from '@/database/transaksi';
+import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -54,10 +55,25 @@ const DetailTransaksi = () => {
                  <FlashList
                     data={data}
                     renderItem={({item}) => (
-                        <View className='flex-row bg-white rounded-md p-5 w-full mb-4'>
+                        // <View className='flex-row bg-white rounded-md p-5 w-full mb-4'>
+                        //     <View>
+                        //         <Text className='font-bold'>{item.nama_barang}</Text>
+                        //         <Text className='mt-1'>Rp. {item.harga.toLocaleString()}</Text>
+                        //     </View>
+                        //     <View className='flex-row items-end ml-auto gap-2'>
+                        //         <View className='px-5 py-2.5 rounded-md border border-gray-500'>
+                        //             <Text className='font-bold'>{item.quantity} x {item.harga.toLocaleString()} = {(item.quantity * item.harga).toLocaleString()}</Text>
+                        //         </View>
+                        //     </View>
+                        // </View>
+
+                        <View className='flex-row bg-white items-center gap-2 rounded-md p-3 w-full mb-4'>
+                            <View className='bg-blue-500 p-5 rounded-md'>
+                                <Ionicons name='logo-dropbox' size={20} color="#fff"/>
+                            </View>
                             <View>
-                                <Text className='font-bold'>{item.nama_barang}</Text>
-                                <Text className='mt-1'>Rp. {item.harga.toLocaleString()}</Text>
+                                <Text className='font-bold'>Nama Barang</Text>
+                                <Text className='mt-1'>{item.nama_barang}</Text>
                             </View>
                             <View className='flex-row items-end ml-auto gap-2'>
                                 <View className='px-5 py-2.5 rounded-md border border-gray-500'>
@@ -69,14 +85,39 @@ const DetailTransaksi = () => {
                     estimatedItemSize={91}
                     ListHeaderComponent={
                         data.at(0)?.nama_pembeli ? (
-                            <Text className='font-semibold mb-2'>Nama Pembeli: {data.at(0)?.nama_pembeli}</Text>
-
+                            <View
+                                className='w-full bg-white mb-4 p-3 rounded-md' 
+                            >
+                                <View className='flex-row  items-center gap-2'>
+                                    <View className='bg-blue-500 p-5 rounded-md'>
+                                        <Ionicons name='person' size={20} color="#fff"/>
+                                    </View>
+                                    <View>
+                                        <Text className='font-semibold'>Nama Pembeli</Text>
+                                        <Text className=''>{data.at(0)?.nama_pembeli}</Text>
+                                    </View>
+                                    
+                                </View>
+                            </View>
                         ) : null
                     }
                     className="mt-5 w-full"
                     keyExtractor={(item, index) => index.toString()}
                     ListFooterComponent={() => (
-                        <Text className='font-bold text-center text-xl'>Total Harga: Rp.{totalHarga.toLocaleString()}</Text>
+                        <View
+                            className='w-full bg-white mb-10 p-3 rounded-md' 
+                        >
+                            <View className='flex-row items-center gap-2'>
+                                <View className='bg-blue-500 p-5 rounded-md'>
+                                    <Ionicons name='cash-sharp' size={20} color="#fff"/>
+                                </View>
+                                <View>
+                                    <Text className='font-semibold'>Total Harga</Text>
+                                    <Text className=''>Rp. {totalHarga.toLocaleString()}</Text>
+                                </View>
+                                
+                            </View>
+                        </View>
                     )}
                 />
 

@@ -51,6 +51,7 @@ const hutang = () => {
     const hutang = useHutang();
     const setHutang = useSetHutang();
     const [search, setSearch] = useState('');
+    const [searchedHutang, setSearchedHutang] = useState<hutang[]>([])
     const database = useDatabase();
 
     useEffect(() => {
@@ -64,6 +65,21 @@ const hutang = () => {
 
     }, [])
 
+    useEffect(() => {
+        if(search.trim()){
+            const data = hutang.filter((item) => item.nama_pembeli.toLowerCase().startsWith(search.toLowerCase()))
+            if(data.length){
+                setSearchedHutang(data)
+            }
+
+        }
+        else {
+            setSearchedHutang([])
+        }
+    }, [search])
+
+    
+
     return (
         <View className='flex-1 px-5'>
             <View className="flex justify-center items-center mt-14">
@@ -71,17 +87,19 @@ const hutang = () => {
                 <Text className="text-xl font-bold text-blue-500 italic -mt-3">WaroongKU</Text>
             </View>
             {/* Search Code */}
-            <SearchBar value={search} onChangeText={(text: string) => setSearch(text)} />
+            <SearchBar title='Masukkan nama pembeli' barcodeBtn={false} value={search} onChangeText={(text: string) => setSearch(text)} />
 
             <FlashList
-                data={hutang}
+                data={search ? searchedHutang : hutang}
                 renderItem={({item}) => (
                     <CardHutang {...item} />
                 )}
                 estimatedItemSize={91}
                 className="mt-5 w-full"
                 keyExtractor={(item) => item.id.toString()}
-                
+                ListEmptyComponent={() => (
+                    <Text>Data Tidak Ditemukan/Kosong</Text>
+                )}
             />
         </View>
     )

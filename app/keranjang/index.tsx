@@ -119,16 +119,16 @@ const index = () => {
             
             })
 
-            // update data hutang
-            const dataHutang = await fetchAllHutang(database);
-            setDataHutang(dataHutang);
+            
             // update data transaksi
             const dataTransaksi = await fetchAllTransaksi(database);
             setDataTransaksi(dataTransaksi);
         } catch (err){
             console.log(err)
         } finally {
-            
+            // update data hutang
+            const dataHutang = await fetchAllHutang(database);
+            setDataHutang(dataHutang);
             setModalPayment(!modalPayment);
             setSuccessModal(true);
             setKeranjang([]);
