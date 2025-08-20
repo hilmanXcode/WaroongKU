@@ -83,6 +83,32 @@ export const addOrUpdateHutang = async({database, uuid, nama_pembeli, total_baya
     }
 }
 
+export const updateHutang = async(database: SQLiteDatabase | null, total_bayar: number, nama_pembeli: string | undefined) => {
+    if(!database)
+        return Alert.alert("Error", "Koneksi ke database gagal")
+
+    if(!nama_pembeli)
+        return Alert.alert("Error", "Nama pembeli tidak ditemukan")
+
+    const date = new Date().toISOString().substring(0, 10);
+    const dateTime = new Date().toLocaleTimeString()
+
+    try {
+        const data = await checkHutang(database, nama_pembeli);
+        if(!data)
+            return Alert.alert("Error", "Data hutang tidak ditemukan")
+
+        const updateTotal = data.total_bayar += total_bayar;
+
+        await database.execAsync(`
+            UPDATE hutang SET total_bayar = ${updateTotal}, tanggal = '${date}', waktu = '${dateTime}' WHERE nama_pembeli = '${nama_pembeli}'; 
+        `)
+    } catch(err){
+        console.log(err)
+        throw err;
+    }
+}
+
 export const fetchAllHutang = async(database: SQLiteDatabase | null) => {
     if(!database){
         Alert.alert("Error", "Koneksi ke database gagal")

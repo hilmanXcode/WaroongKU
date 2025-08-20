@@ -109,15 +109,30 @@ const index = () => {
         try {
             
             // add data transaksi
-            keranjang.map(async(item) => {
+             await Promise.all(
+                keranjang.map(async (item) => {
+                    if (cashPayment < totalHarga && namaPembeli !== '') {
+                        await addOrUpdateHutang({
+                            database,
+                            nama_pembeli: namaPembeli,
+                            total_bayar: cashPayment,
+                            uuid: uuid,
+                            nama_barang: item.nama_barang,
+                            harga: item.harga,
+                            quantity: item.quantity
+                        });
+                    }
 
-                if(cashPayment < totalHarga && namaPembeli !== ''){
-                    await addOrUpdateHutang({database, nama_pembeli: namaPembeli, total_bayar: cashPayment, uuid: uuid, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity})
-                }
-
-                await addNewTransaksi({database, nama_pembeli: namaPembeli, nama_barang: item.nama_barang, harga: item.harga, quantity: item.quantity, uuid});
-            
-            })
+                    await addNewTransaksi({
+                        database,
+                        nama_pembeli: namaPembeli,
+                        nama_barang: item.nama_barang,
+                        harga: item.harga,
+                        quantity: item.quantity,
+                        uuid
+                    });
+                })
+            );
 
             
             // update data transaksi
