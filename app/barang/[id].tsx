@@ -67,12 +67,13 @@ const EditBarang = () => {
 
         <View className='flex flex-row items-center -mt-24 px-10 h-screen'>
           <View className='bg-white p-5 rounded-md'>
-            <View className='flex flex-row items-center gap-2 mb-2'>
+            <View className='flex py-2 flex-row items-center gap-2 mb-2'>
               <View className='bg-blue-500 p-2 rounded-md'>
                 <Ionicons name='pencil' size={22} color="#fff" />
               </View>
-              <View>
-                <Text className='text-xl font-bold'>Edit Data Barang {data.nama_barang}</Text>
+              <View className='flex'>
+                <Text className='text-xl text-wrap font-bold'>Edit Data Barang</Text>
+                <Text className='text-base w-32 line-clamp-1'>{data.nama_barang}</Text>
               </View>
             </View>
             <View>
@@ -80,9 +81,11 @@ const EditBarang = () => {
                     Nama Barang <Text className="text-red-600">*</Text>
                 </Text>
                 <TextInput
+                    
+
                     value={namaBarang}
                     onChangeText={(value: string) => setNamaBarang(value)}
-                    className="w-full px-3 py-2 border border-slate-500 rounded mt-1 text-black"
+                    className="px-3 py-2 border border-slate-500 rounded mt-1 text-black"
                 />
             </View>
             <View className='mt-2'>
@@ -94,6 +97,7 @@ const EditBarang = () => {
                         value={editBarcode}
                         onChangeText={(value: string) => setEditBarcode(value)}
                         className="w-full px-3 py-2 border border-slate-500 rounded mt-1 text-black"
+
                         />
                       <TouchableOpacity onPress={() => router.push({
                         pathname: "/scanner",

@@ -152,7 +152,7 @@ const DetailHutang = () => {
                         </View>
                         <View>
                             <Text className='font-bold'>Nama Barang</Text>
-                            <Text className='mt-1'>{item.nama_barang}</Text>
+                            <Text className='mt-1 w-32 line-clamp-2'>{item.nama_barang}</Text>
                         </View>
                         <View className='flex-row items-end ml-auto gap-2'>
                             <View className='px-5 py-2.5 rounded-md border border-gray-500'>
@@ -183,17 +183,21 @@ const DetailHutang = () => {
                 ListFooterComponent={() => (
                     <>
                         {target.total_bayar >= totalHarga ? (
-                            <View
-                                className='w-full bg-green-500 mb-3 p-5 rounded-md' 
-                            >
-                                <View className='flex-row justify-center items-center gap-2'>
-                                    <View>
-                                        <Text className='font-semibold text-white text-xl'>Hutang Lunas</Text>
-                                    </View>
-                                    <View>
-                                        <Ionicons name='checkbox-outline' size={20} color="#fff"/>
-                                    </View>
+                            <View>
+                                <Text className='mb-5 font-bold'>Total Bayar Hutang : Rp. {target.total_bayar.toLocaleString()}</Text>
+                                <View
+                                    className='w-full bg-green-500 mb-3 p-5 rounded-md' 
+                                    >
                                     
+                                    <View className='flex-row justify-center items-center gap-2'>
+                                        <View>
+                                            <Text className='font-semibold text-white text-xl'>Hutang Lunas</Text>
+                                        </View>
+                                        <View>
+                                            <Ionicons name='checkbox-outline' size={20} color="#fff"/>
+                                        </View>
+                                        
+                                    </View>
                                 </View>
                             </View>
                         ) : (

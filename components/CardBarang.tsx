@@ -24,7 +24,7 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, handleIncrement
                     <Ionicons name='logo-dropbox' size={20} color="#fff"/>
                 </View>
                 <View>
-                    <Text className='font-bold'>{nama_barang}</Text>
+                    <Text className='font-bold w-32 line-clamp-2'>{nama_barang}</Text>
                     <Text className=''>Rp. {harga.toLocaleString()}</Text>
                 </View>
                 <View className='flex-row justify-center items-center ml-auto gap-2'>
@@ -53,7 +53,7 @@ const CardBarang = ({ id, nama_barang, harga, isCashier = false, handleIncrement
                         <Ionicons name='logo-dropbox' size={20} color="#fff"/>
                     </View>
                     <View>
-                        <Text className='font-bold'>{nama_barang}</Text>
+                        <Text className='font-bold w-32 line-clamp-2'>{nama_barang}</Text>
                         <Text className=''>Rp. {harga.toLocaleString()}</Text>
                     </View>
                     <View className='flex-row justify-center items-center ml-auto gap-2'>

@@ -27,17 +27,24 @@ const CardHutang = ({id, nama_pembeli, tanggal}: hutang) => {
             activeOpacity={0.6}
             onPress={() => router.push({ pathname: "/hutang/[id]", params: { id: id.toString() } })}
         >
-            <View className='flex-row justify-center items-center gap-2'>
-                <View className='bg-blue-500 p-5 rounded-md'>
-                    <Ionicons name='person' size={20} color="#fff"/>
+            <View className='flex-row justify-between items-center gap-2'>
+                <View className='flex-row items-center gap-3'>
+                    <View className='bg-blue-500 p-5 rounded-md'>
+                        <Ionicons name='person' size={20} color="#fff"/>
+                    </View>
+                    <View>
+                        <Text className='font-semibold'>Nama Pembeli</Text>
+                        <Text className=''>{nama_pembeli}</Text>
+                    </View>
                 </View>
                 <View>
-                    <Text className='font-semibold'>Nama Pembeli</Text>
-                    <Text className=''>{nama_pembeli}</Text>
-                </View>
-                <View className='flex-row justify-center items-center ml-auto gap-2'>
-                    <Ionicons name='calendar' color="#3b82f6" size={20} />
-                    <Text className='font-medium '>{tanggal}</Text>
+                    <View className='flex-row justify-center items-center ml-auto gap-2'>
+                        <Ionicons name='calendar' color="#3b82f6" size={20} />
+                        <Text className='font-medium '>{tanggal}</Text>
+                    </View>
+                    <View className='bg-green-500 p-1 rounded-md mt-2'>
+                        <Text className='text-center font-bold text-white'>Lunas</Text>
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>

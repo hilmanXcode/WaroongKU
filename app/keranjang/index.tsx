@@ -29,14 +29,13 @@ interface Keranjang {
 const CardKeranjang = ({nama_barang, harga, quantity, handleDecrement, handleIncrement}: Keranjang) => {
     return (
         <View
-            className='flex-row bg-white rounded-md p-5 w-full mb-5'
-             
+            className='flex-row bg-white rounded-md p-5 w-full mb-5'             
         >
             <View>
-                <Text className='font-bold'>{nama_barang}</Text>
+                <Text className='font-bold w-32 line-clamp-2'>{nama_barang}</Text>
                 <Text className='mt-1'>Rp. {harga.toLocaleString()}</Text>
             </View>
-            <View className='flex-row items-end ml-auto gap-2'>
+            <View className='flex-row items-center ml-auto gap-2'>
                 <TouchableOpacity onPress={handleDecrement} activeOpacity={0.8} className='px-5 bg-red-500 py-2.5 rounded-md'>
                     <Text className='font-bold text-white'>-</Text>
                 </TouchableOpacity>
@@ -205,7 +204,7 @@ const index = () => {
                             <Text className='font-bold'>Detail Pembelian: </Text>
                             {keranjang.map((item) => (
                                 <View className='flex-row mt-1' key={item.id}>
-                                    <Text>{item.nama_barang} {item.quantity}x</Text>
+                                    <Text className='w-64 truncate'>{item.nama_barang} {item.quantity}x</Text>
                                     <Text className='ml-auto'>Rp. {(item.harga * item.quantity).toLocaleString()}</Text>
                                 </View>
                             ))}
