@@ -1,12 +1,12 @@
 'use client'
 
 import React, {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState
 } from "react";
 
 
@@ -17,6 +17,7 @@ interface hutang {
     total_bayar: number
     tanggal: string
     waktu: string
+    total_hutang: number
 }
 
 

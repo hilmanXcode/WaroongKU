@@ -17,10 +17,13 @@ interface hutang {
     total_bayar: number
     tanggal: string
     waktu: string
+    total_hutang: number
 }
 
-const CardHutang = ({id, nama_pembeli, tanggal}: hutang) => {
-    
+
+
+const CardHutang = ({id, nama_pembeli, tanggal, total_hutang, total_bayar}: hutang) => {
+
     return (
         <TouchableOpacity
             className='w-full bg-white mb-4 p-3 rounded-md' 
@@ -42,8 +45,8 @@ const CardHutang = ({id, nama_pembeli, tanggal}: hutang) => {
                         <Ionicons name='calendar' color="#3b82f6" size={20} />
                         <Text className='font-medium '>{tanggal}</Text>
                     </View>
-                    <View className='bg-green-500 p-1 rounded-md mt-2'>
-                        <Text className='text-center font-bold text-white'>Lunas</Text>
+                    <View className={`${total_bayar >= total_hutang ? 'bg-green-500' : 'bg-red-500'} p-1 rounded-md mt-2`}>
+                        <Text className='text-center font-bold text-white'>{total_bayar >= total_hutang ? 'Lunas' : 'Belum Lunas'}</Text>
                     </View>
                 </View>
             </View>
@@ -99,7 +102,7 @@ const hutang = () => {
             <FlashList
                 data={search ? searchedHutang : hutang}
                 renderItem={({item}) => (
-                    <CardHutang {...item} />
+                    <CardHutang {...item}  />
                 )}
                 estimatedItemSize={91}
                 className="mt-5 w-full"

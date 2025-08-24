@@ -26,6 +26,7 @@ interface allDataHutang {
     total_bayar: number
     tanggal: string
     waktu: string
+    total_hutang: number
 }
 
 interface detailHutang {
@@ -119,7 +120,12 @@ export const fetchAllHutang = async(database: SQLiteDatabase | null) => {
 
     try {
         response = await database.getAllAsync("SELECT * FROM hutang");
-
+        
+        await Promise.all(
+                response.map(async(item) => {
+                return item.total_hutang = await fetchTotalHutang(database, item.detail_hutang)
+            })
+        )
         
     } catch(err){
         console.log(err)
@@ -146,4 +152,25 @@ export const fetchDetailHutang = async(database: SQLiteDatabase | null, id: stri
 
     return response;
     
+}
+
+export const fetchTotalHutang = async(database: SQLiteDatabase | null, id: string | undefined) => {
+    if(!database){
+        Alert.alert("Error", "Koneksi ke database gagal");
+        return 0;
+    }
+
+    let response
+
+    try {
+        response = await database.getFirstAsync<{ total_hutang: number }>(`
+            SELECT SUM(harga * quantity) AS total_hutang FROM detail_hutang WHERE id = '${id}' 
+        `)
+
+        return response?.total_hutang ?? 0
+    } catch (err){
+        console.log(err)
+        throw err
+    }
+
 }
